@@ -424,58 +424,73 @@
            ========================================================================== */
         @media screen and (max-width: 768px) {
             body {
-                padding: 15px 10px; /* 上下の余白を狭めて画面を広く使う */
-                display: block;      /* 中央配置を解除し、自然な縦スクロールにする */
+                padding: 10px;
+                display: block; /* 自然な縦スクロールにする */
             }
         
-            /* ボタン類が上部に重なるのを防ぐため、メインカードに十分な上部マージンを確保 */
+            /* --- ヘッダーエリア（音量とタイマーを1行に並べる） --- */
+            #mute-btn, #timer-display {
+                position: static !important; /* 絶対配置を解除して並べる */
+                box-sizing: border-box;
+            }
+        
+            /* 2つのボタンを上部で横並びにするためのコンテナ（body直下に配置を想定、または自動並び替え） */
+            #mute-btn {
+                float: left;
+                width: 42%;
+                margin-top: 10px;
+                margin-left: 2%;
+                padding: 10px 5px;
+                font-size: 13px;
+                text-align: center;
+            }
+        
+            #timer-display {
+                float: right;
+                width: 52%;
+                margin-top: 10px;
+                margin-right: 2%;
+                padding: 8px 5px;
+                font-size: 14px;
+                justify-content: center;
+            }
+        
+            /* 回り込みを解除してメインカードへの影響を防ぐ */
+            body::after {
+                content: "";
+                display: block;
+                clear: both;
+            }
+        
+            /* --- メインカードの調整 --- */
             .container {
                 width: 100%;
                 max-width: 100%;
                 box-sizing: border-box;
                 padding: 20px 15px;
-                margin-top: 80px; /* タイマーや音量ボタンとの衝突回避 */
+                margin-top: 20px; /* 横並びにしたので、上の余白は少なめでOK */
                 margin-bottom: 20px;
+                clear: both; /* ボタンの回り込みを完全に遮断 */
             }
         
-            /* 左上の音量ボタン */
-            #mute-btn {
-                top: 15px;
-                left: 10px;
-                padding: 8px 12px;
-                font-size: 13px;
-            }
-        
-            /* 右上のタイマー表示 */
-            #timer-display {
-                top: 15px;
-                right: 10px;
-                padding: 8px 15px;
-                font-size: 16px; /* 文字を少し小さくして1行に収める */
-            }
-        
-            .hourglass-anime {
-                font-size: 18px;
-            }
-        
-            /* 入力欄（校舎名・チーム名・解答欄） */
+            /* --- 入力欄（校舎名・チーム名・解答欄） --- */
             .input-style {
-                width: 100% !important; /* 横幅いっぱいに広げて押しやすく */
-                font-size: 16px !important; /* iOS(Safari)でズームされるのを防ぐサイズ */
+                width: 100% !important;
+                font-size: 16px !important; /* iOSのズーム防止 */
                 padding: 12px 8px;
                 box-sizing: border-box;
             }
         
-            /* ルール説明の箇条書き */
+            /* --- ルール説明 --- */
             .rule-list {
                 font-size: 13px;
                 width: 100% !important;
             }
         
-            /* 累積参加数カウンター */
+            /* --- 累積参加数カウンター --- */
             .counter-box {
                 padding: 10px 12px;
-                flex-wrap: wrap; /* 画面が狭いときは自動で折り返す */
+                flex-wrap: wrap;
                 gap: 6px;
             }
             .counter-label {
@@ -486,14 +501,14 @@
                 padding: 2px 6px;
             }
         
-            /* ランキングテーブル */
+            /* --- ランキングテーブル --- */
             .ranking-table th, 
             .ranking-table td {
-                font-size: 11px; /* 小さな画面でも潰れないように文字サイズを調整 */
+                font-size: 11px;
                 padding: 8px 4px;
             }
             
-            /* 振り返りモーダル（ポップアップ窓） */
+            /* --- 振り返りモーダル --- */
             .modal-content {
                 width: 95%;
                 padding: 15px;
