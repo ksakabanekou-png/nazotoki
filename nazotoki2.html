@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>リアルタイム合同画像クイズゲーム</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+            transition: background-color 0.5s ease;
+            overflow-y: auto; 
+            box-sizing: border-box;
+            padding: 40px 0;
+        }
+
+        /* 右上のタイマーデザイン */
+        #timer-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-family: 'Arial', 'Hiragino Kaku Gothic ProN', 'Helvetica', 'Meiryo', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 90;
+        }
+
+        .hourglass-anime {
+            display: inline-block;
+            font-size: 24px;
+            animation: rotateHourglass 2s ease-in-out infinite;
+        }
+
+        @keyframes rotateHourglass {
+            0%, 40% { transform: rotate(0deg); }
+            70%, 100% { transform: rotate(180deg); }
+        }
+
+        #mute-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+            z-index: 100;
+        }
+        #mute-btn:hover { background-color: #5a6268; }
+        .muted-active { background-color: #dc3545 !important; }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 550px;
+            z-index: 10;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .hidden { display: none !important; }
+
+        .question-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .quiz-image {
+            max-width: 100%;
+            height: auto;
+            background-color: #eee;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 解答欄の上の案内メッセージ用のスタイル */
+        .input-hint-text {
+            font-size: 15px;
+            font-weight: bold;
+            color: #e44d26;
+            margin-bottom: 8px;
+        }
+
+        .input-style {
+            width: 80%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            outline: none;
+            text-align: center;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .start-btn {
+            background-color: #28a745;
+            font-size: 20px;
+            padding: 15px 40px;
+            margin-top: 10px;
+        }
+        .start-btn:hover { background-color: #218838; }
+
+        .review-trigger-btn {
+            background-color: #17a2b8;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .review-trigger-btn:hover { background-color: #138496; }
+
+        .rule-list {
+            text-align: left;
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #444;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 累積参加者カウンター */
+        .counter-box {
+            background: linear-gradient(135deg, #eef2f7, #dfe5ed);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid #d2d9e2;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .counter-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4b6584;
+            letter-spacing: 0.5px;
+        }
+        .counter-number-wrapper {
+            display: flex;
+            gap: 3px;
+        }
+        .counter-digit {
+            background-color: #2c3e50;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border-bottom: 2px solid #1a252f;
+        }
+        .counter-unit {
+            font-size: 15px;
+            font-weight: bold;
+            color: #4b6584;
+            margin-left: 2px;
+        }
+
+        /* 最下部システム管理リンクのスタイル */
+        .admin-links-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .admin-reset-link {
+            font-size: 11px;
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .admin-reset-link:hover {
+            color: #888;
+        }
+
+        /* === 演出：正解 === */
+        .result-title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .correct-text { 
+            color: #28a745; 
+            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes popUp {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* === 自前ひもテープエフェクト === */
+        .tape-particle {
+            position: absolute;
+            width: 8px;
+            height: 25px;
+            border-radius: 4px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* === 演出：不正解 === */
+        .incorrect-text { 
+            color: #4b6584;
+            animation: gloomEffect 2s ease-in-out infinite;
+        }
+        @keyframes gloomEffect {
+            0%, 100% { transform: translateY(0); opacity: 0.9; }
+            50% { transform: translateY(5px); opacity: 0.6; }
+        }
+
+        .gloom-bg {
+            background-color: #2c3e50 !important;
+        }
+
+        .shake-animation {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        /* === 演出：カウントダウン === */
+        .ready-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffc107;
+            animation: pulse 1s infinite;
+        }
+        .go-text {
+            font-size: 56px;
+            font-weight: bold;
+            color: #dc3545;
+            animation: popUp 0.4s ease-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* === ランキング＆情報ボックス === */
+        .ranking-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .ranking-table th, .ranking-table td {
+            padding: 10px 6px;
+            border-bottom: 1px solid #ddd;
+            font-size: 13px;
+        }
+        .ranking-table th { background-color: #e9ecef; color: #333; }
+        
+        .result-info-box {
+            background: #f1f9f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: left;
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .result-info-item {
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .result-info-item strong {
+            font-size: 18px;
+        }
+
+        /* 生存率・到達割合のデザイン */
+        .progress-summary-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            text-align: left;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .progress-bar-container {
+            margin-bottom: 12px;
+        }
+        .progress-bar-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #4b6584;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .progress-bar-bg {
+            background-color: #e9ecef;
+            height: 14px;
+            border-radius: 7px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4da1ff, #007bff);
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.1, 0.8, 0.25, 1);
+        }
+        .progress-bar-fill.cleared {
+            background: linear-gradient(90deg, #56d77e, #28a745);
+        }
+
+        /* 振り返りモーダル（ポップアップ窓）のスタイル */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-answer-box {
+            background-color: #eef9f6;
+            border: 1px solid #ccebe2;
+            color: #155724;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        .modal-close-btn {
+            background-color: #6c757d;
+            padding: 8px 20px;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .modal-close-btn:hover { background-color: #5a6268; }
+        .modal-nav-btn {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 6px 15px;
+            font-size: 14px;
+            border-radius: 4px;
+            margin: 0 5px;
+        }
+        .modal-nav-btn:hover:not(:disabled) { background-color: #e2e6ea; }
+        .modal-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <audio id="se-ready" src="music00.mp3"></audio>
+    <audio id="se-go" src="music01.mp3"></audio>
+    <audio id="bgm-normal" src="music1.mp3" loop></audio>
+    <audio id="bgm-hurry" src="music2.mp3" loop></audio>
+    <audio id="se-correct" src="music3.mp3"></audio>
+    <audio id="se-incorrect" src="music4.mp3"></audio>
+    <audio id="bgm-clear" src="music5.mp3" loop></audio>
+    <audio id="bgm-timeup" src="music6.mp3" loop></audio>
+
+    <button id="mute-btn" onclick="toggleMute()">🔊 音量：ON</button>
+
+    <div id="timer-display" class="hidden">
+        <span class="hourglass-anime">⏳</span>
+        <span id="timer-text">残り時間 45:00</span>
+    </div>
+
+    <div id="effect-layer" style="position:fixed; width:100%; height:100%; top:0; left:0; pointer-events:none; z-index:5;"></div>
+
+    <div id="main-card" class="container">
+        
+        <div id="start-screen">
+            <h1 style="margin-bottom: 15px;">クイズに挑戦！</h1>
+            
+            <div class="rule-list">
+                <div>・制限時間は <span style="font-weight: bold; color: #007bff;">45分間</span> です。</div>
+                <div>・全部で <span style="font-weight: bold;">5問</span> 出題されます。</div>
+                <div>・<span style="color: #dc3545; font-weight: bold;">誤答をすると持ち時間が 5分 減ります。</span></div>
+                <div>・チャンスは<span style="color: #dc3545; font-weight: bold;">1回限り</span>。一度失敗・クリアすると再挑戦不可！</div>
+            </div>
+
+            <div>
+                <div class="counter-box">
+                    <span class="counter-label">現在の累積参加数:</span>
+                    <div id="counter-numbers" class="counter-number-wrapper"></div>
+                    <span class="counter-unit">組</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px; text-align: left; width: 80%; margin-left: auto; margin-right: auto;">
+                <label for="campus-name-input" style="display:block; margin-bottom:5px; font-weight:bold; font-size:14px; color:#555;">① 校舎名を入力：</label>
+                <input type="text" id="campus-name-input" class="input-style" style="width:100%;" placeholder="〇〇校" autocomplete="off">
+
+                <label for="team-name-input" style="display:block; margin-bottom:5px; font-weight:bold; font-size:14px; color:#555;">② 参加者・チーム名を入力：</label>
+                <input type="text" id="team-name-input" class="input-style" style="width:100%;" placeholder="チーム名・個人名" autocomplete="off">
+            </div>
+
+            <button id="start-btn" class="start-btn" onclick="startSequence()">クイズを開始する</button>
+
+            <div class="ranking-box">
+                <strong style="color:#007bff;">🏆 トップ3 ランキング</strong>
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">順位</th>
+                            <th style="width: 23%;">校舎名</th>
+                            <th style="width: 25%;">チーム名</th>
+                            <th style="width: 20%;">タイム</th>
+                            <th style="width: 20%;">挑戦日時</th>
+                        </tr>
+                    </thead>
+                    <tbody id="start-ranking-body"></tbody>
+                </table>
+            </div>
+
+            <div class="admin-links-container">
+                <span class="admin-reset-link" onclick="triggerDeviceUnlock()">⚙️ 端末ロック解除 (retry)</span>
+                <span class="admin-reset-link" onclick="triggerAdminReset()">⚠️ system reset</span>
+            </div>
+        </div>
+
+        <div id="countdown-screen" class="hidden">
+            <div id="countdown-text" class="ready-text">用意…</div>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div id="quiz-title" class="question-number">問 1</div>
+            <img id="question-img" class="quiz-image" src="" alt="[画像が読み込めません]">
+            <div>
+                <div id="quiz-hint" class="input-hint-text">数字で答えなさい。</div>
+                <input type="text" id="answer-input" class="input-style" placeholder="答えを入力してください" autocomplete="off">
+            </div>
+            <button id="submit-btn" onclick="checkAnswer()">解答</button>
+            
+            <div>
+                <button id="review-btn" class="review-trigger-btn hidden" onclick="openReviewModal()">🔍 前の謎を振り返る</button>
+            </div>
+        </div>
+
+        <div id="correct-screen" class="hidden">
+            <div class="result-title correct-text">✨ 正解 ✨</div>
+            <button onclick="nextQuestion()">次へ</button>
+        </div>
+
+        <div id="incorrect-screen" class="hidden">
+            <div class="result-title incorrect-text">💧 不正解... 💧</div>
+            <p style="color: #4b6584; font-weight: bold; margin-bottom: 20px;">ペナルティ：持ち時間が 5分 減りました</p>
+            <button onclick="backToQuiz()">戻る</button>
+        </div>
+
+        <div id="clear-screen" class="hidden">
+            <div class="result-title" style="color: #ffc107;">🎉 全問クリア！</div>
+            <p style="font-size: 16px; margin-bottom: 10px;">おめでとうございます！見事に脱出成功です！</p>
+            
+            <div class="result-info-box">
+                <div class="result-info-item">【校舎名】 <span id="res-campus" style="font-weight:bold;">---</span></div>
+                <div class="result-info-item">【チーム名】 <span id="res-team" style="font-weight:bold;">---</span></div>
+                <div class="result-info-item" style="margin-top: 10px;">【クリアタイム】 <strong id="clear-time-output" style="color:#28a745;">00分00秒</strong></div>
+                <div class="result-info-item" style="font-size:12px; color:#666; margin-top:10px;">【挑戦日時】 <span id="res-datetime">---</span></div>
+            </div>
+            
+            <div class="ranking-box">
+                <strong style="color:#28a745;">🏆 現在のトップ3</strong>
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">順位</th>
+                            <th style="width: 25%;">校舎名</th>
+                            <th style="width: 28%;">チーム名</th>
+                            <th style="width: 35%;">タイム</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clear-ranking-body"></tbody>
+                </table>
+            </div>
+
+            <div id="clear-progress-box" class="progress-summary-box"></div>
+        </div>
+
+        <div id="timeup-screen" class="hidden">
+            <div class="result-title incorrect-text" style="color:#dc3545;">💀 タイムアップ！</div>
+            <p style="font-size: 16px;">制限時間が終了しました。脱出失敗です…</p>
+            
+            <div class="result-info-box" style="background: #fff5f5;">
+                <div class="result-info-item">【校舎名】 <span id="fail-campus" style="font-weight:bold;">---</span></div>
+                <div class="result-info-item">【チーム名】 <span id="fail-team" style="font-weight:bold;">---</span></div>
+                <div class="result-info-item" style="margin-top: 10px;">【脱落ポイント】 <strong id="fail-point-output" style="color:#dc3545;">問 1</strong></div>
+            </div>
+
+            <div class="ranking-box">
+                <strong style="color:#007bff;">🏆 ライバルたちのトップ3</strong>
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">順位</th>
+                            <th style="width: 25%;">校舎名</th>
+                            <th style="width: 28%;">チーム名</th>
+                            <th style="width: 35%;">タイム</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fail-ranking-body"></tbody>
+                </table>
+            </div>
+
+            <div id="fail-progress-box" class="progress-summary-box"></div>
+        </div>
+
+    </div>
+
+    <div id="review-modal" class="modal-overlay hidden" onclick="closeReviewModalOnOverlay(event)">
+        <div class="modal-content">
+            <div id="modal-quiz-title" class="question-number" style="color: #17a2b8;">問 1 (振り返り)</div>
+            <img id="modal-question-img" class="quiz-image" src="" alt="画像" style="margin-bottom: 12px;">
+            
+            <div>
+                <div id="modal-quiz-answer" class="modal-answer-box">正解：〇〇</div>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                <button id="modal-prev-btn" class="modal-nav-btn" onclick="navigateReview(-1)">◀ 前の謎</button>
+                <button id="modal-next-btn" class="modal-nav-btn" onclick="navigateReview(1)">次の謎 ▶</button>
+            </div>
+            
+            <button class="modal-close-btn" onclick="closeReviewModal()">閉じる</button>
+        </div>
+    </div>
+
+    <script>
+        // Firebaseの設定情報
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7WnB1tB0_L02iDes0CGUMW5YDc35IuTQ",
+            authDomain: "nazotokidayo.firebaseapp.com",
+            databaseURL: "https://nazotokidayo-default-rtdb.firebaseio.com",
+            projectId: "nazotokidayo",
+            storageBucket: "nazotokidayo.firebasestorage.app",
+            messagingSenderId: "1077560535083",
+            appId: "1:1077560535083:web:ae473888b7bae6fb97e26e",
+            measurementId: "G-J79K0RYX4Y"
+        };
+
+        // Firebaseの初期化
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        var initialOffset = 0; 
+
+        // クイズデータ
+        var quizData = [
+            { title: "問 1", image: "1問.png", answer: ["1", "１"], hint: "数字で答えなさい。" },
+            { title: "問 2", image: "2問.png", answer: ["6", "６"], hint: "数字で答えなさい。" },
+            { title: "問 3", image: "3問.png", answer: "ゆめをみろ", hint: "ひらがなで答えなさい。" },
+            { title: "問 4", image: "4問.png", answer: "せいと", hint: "ひらがなで答えなさい。" },
+            { title: "問 5", image: "5問.png", answer: "ていきてすと", hint: "ひらがなで答えなさい。" }
+        ];
+
+        var currentQuestionIndex = 0;
+        var reviewTargetIndex = 0; 
+        var timerInterval = null;
+        var totalTime = 45 * 60;
+        var timeLeft = totalTime;
+        var campusName = "";
+        var teamName = "";
+        var startDateTimeStr = ""; 
+        var currentBgm = ""; 
+        var isMuted = false;
+        var myUniqueKey = ""; 
+
+        // BGMの基本音量を5分の1（0.2）に定義
+        const BGM_VOLUME = 0.2;
+
+        window.onload = function() {
+            initBgmVolume();
+
+            database.ref('quiz_event/scores').on('value', function(snapshot) {
+                var allScores = [];
+                snapshot.forEach(function(childSnapshot) {
+                    allScores.push(childSnapshot.val());
+                });
+                displayRanking(allScores);
+                displayProgressStats(allScores);
+            });
+
+            database.ref('quiz_event/total_counter').on('value', function(snapshot) {
+                var count = snapshot.val() || 0;
+                updateParticipantCounter(count);
+            });
+            
+            checkFailureStatus();
+        };
+
+        function initBgmVolume() {
+            var bgmIds = ["bgm-normal", "bgm-hurry", "bgm-clear", "bgm-timeup"];
+            bgmIds.forEach(function(id) {
+                var audio = document.getElementById(id);
+                if (audio) { audio.volume = BGM_VOLUME; }
+            });
+        }
+
+        function checkFailureStatus() {
+            if (localStorage.getItem("quiz_failed") === "true") {
+                document.getElementById("start-btn").disabled = true;
+                document.getElementById("start-btn").textContent = "これ以上挑戦できません（脱出失敗）";
+            } else if (localStorage.getItem("quiz_cleared") === "true") {
+                document.getElementById("start-btn").disabled = true;
+                document.getElementById("start-btn").textContent = "これ以上挑戦できません（脱出成功済）";
+            } else {
+                document.getElementById("start-btn").disabled = false;
+                document.getElementById("start-btn").textContent = "クイズを開始する";
+            }
+        }
+
+        // 💡 端末ロック解除用の関数（ランキングデータは残す、パスワード：1995）
+        function triggerDeviceUnlock() {
+            var password = prompt("端末ロック解除用パスワードを入力してください：");
+            if (password === null) return; 
+
+            if (password === "1995") {
+                localStorage.removeItem("quiz_failed");
+                localStorage.removeItem("quiz_cleared");
+                alert("この端末の挑戦履歴を解除しました！データを消さずに再プレイ可能です。");
+                location.reload(); // 画面をリロードして状態を初期化
+            } else {
+                alert("パスワードが違います。認証に失敗しました。");
+            }
+        }
+
+        // サーバーデータ完全初期化用の関数（パスワード：0417）
+        function triggerAdminReset() {
+            var password = prompt("管理用パスワードを入力してください：");
+            if (password === null) return; 
+
+            if (password === "0417") {
+                if (confirm("本当にこれまでのランキング履歴と参加人数カウンターを【全て初期化】しますか？\n（本番データも全て消去されます）")) {
+                    database.ref('quiz_event').set({
+                        total_counter: 0,
+                        scores: null
+                    }).then(function() {
+                        localStorage.removeItem("quiz_failed");
+                        localStorage.removeItem("quiz_cleared");
+                        checkFailureStatus();
+                        alert("Firebaseサーバー上のすべてのデータと、このブラウザの挑戦ロックを初期化しました！");
+                    }).catch(function(error) {
+                        alert("初期化中にエラーが発生しました: " + error.message);
+                    });
+                }
+            } else {
+                alert("パスワードが違います。認証に失敗しました。");
+            }
+        }
+
+        function updateParticipantCounter(cloudCount) {
+            var totalParticipants = cloudCount + initialOffset;
+            var countStr = String(totalParticipants);
+            if (countStr.length < 3) {
+                countStr = ("000" + countStr).slice(-3);
+            }
+
+            var counterContainer = document.getElementById("counter-numbers");
+            counterContainer.innerHTML = "";
+            for (var i = 0; i < countStr.length; i++) {
+                var digitDiv = document.createElement("div");
+                digitDiv.className = "counter-digit";
+                digitDiv.textContent = countStr[i];
+                counterContainer.appendChild(digitDiv);
+            }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            var muteBtn = document.getElementById("mute-btn");
+            var audioIds = ["se-ready", "se-go", "bgm-normal", "bgm-hurry", "se-correct", "se-incorrect", "bgm-clear", "bgm-timeup"];
+
+            audioIds.forEach(function(id) {
+                var audio = document.getElementById(id);
+                if (audio) { audio.muted = isMuted; }
+            });
+
+            if (isMuted) {
+                muteBtn.textContent = "🔇 音量：OFF";
+                muteBtn.classList.add("muted-active");
+            } else {
+                muteBtn.textContent = "🔊 音量：ON";
+                muteBtn.classList.remove("muted-active");
+            }
+        }
+
+        function playBgm(id) {
+            if (currentBgm === id) return; 
+            stopAllBgm();
+            var audio = document.getElementById(id);
+            if (audio) {
+                audio.muted = isMuted;
+                audio.volume = BGM_VOLUME; 
+                audio.currentTime = 0;
+                audio.play().catch(function(e){ console.log("BGM再生制限回避:", e); });
+                currentBgm = id;
+            }
+        }
+
+        function playSe(id) {
+            var audio = document.getElementById(id);
+            if (audio) {
+                audio.muted = isMuted;
+                audio.currentTime = 0;
+                audio.play().catch(function(e){ console.log("SE再生制限回避:", e); });
+            }
+        }
+
+        function getFormattedDateTime() {
+            var now = new Date();
+            var month = ('0' + (now.getMonth() + 1)).slice(-2);
+            var date = ('0' + now.getDate()).slice(-2);
+            var hours = ('0' + now.getHours()).slice(-2);
+            var minutes = ('0' + now.getMinutes()).slice(-2);
+            return month + "/" + date + " " + hours + ":" + minutes;
+        }
+
+        function stopAllBgm() {
+            var bgms = ["bgm-normal", "bgm-hurry", "bgm-clear", "bgm-timeup"];
+            bgms.forEach(function(id) {
+                var audio = document.getElementById(id);
+                if (audio) audio.pause();
+            });
+            currentBgm = "";
+        }
+
+        function startSequence() {
+            if (localStorage.getItem("quiz_failed") === "true") {
+                alert("過去にタイムアップになったため、このブラウザからはもう挑戦できません。");
+                return;
+            }
+            if (localStorage.getItem("quiz_cleared") === "true") {
+                alert("既にクリア済みのブラウザからは再度挑戦することはできません。");
+                return;
+            }
+
+            var campusInput = document.getElementById("campus-name-input").value.trim();
+            var teamInput = document.getElementById("team-name-input").value.trim();
+            
+            if (campusInput === "" || teamInput === "") {
+                alert("「校舎名」と「参加者・チーム名」の両方を入力してください！");
+                return;
+            }
+            campusName = campusInput;
+            teamName = teamInput;
+            
+            startDateTimeStr = getFormattedDateTime();
+
+            database.ref('quiz_event/total_counter').transaction(function(currentCount) {
+                return (currentCount || 0) + 1;
+            });
+
+            var newScoreRef = database.ref('quiz_event/scores').push();
+            myUniqueKey = newScoreRef.key; 
+            newScoreRef.set({
+                campus: campusName,
+                name: teamName,
+                status: "playing",
+                currentStage: 1,
+                timeSpent: 999999, 
+                timeString: "挑戦中...",
+                dateTime: startDateTimeStr
+            });
+
+            document.getElementById("start-screen").classList.add("hidden");
+            document.getElementById("countdown-screen").classList.remove("hidden");
+            
+            playSe("se-ready");
+            
+            setTimeout(function() {
+                var txt = document.getElementById("countdown-text");
+                txt.textContent = "はじめ！！";
+                txt.className = "go-text";
+                playSe("se-go");
+                
+                setTimeout(function() {
+                    document.getElementById("countdown-screen").classList.add("hidden");
+                    startGame();
+                }, 1000);
+
+            }, 1500);
+        }
+
+        function startGame() {
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            document.getElementById("timer-display").classList.remove("hidden");
+            
+            timeLeft = totalTime;
+            updateTimerDisplay();
+            
+            playBgm("bgm-normal");
+            
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(countdown, 1000);
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            var currentQuiz = quizData[currentQuestionIndex];
+            document.getElementById("quiz-title").textContent = currentQuiz.title;
+            document.getElementById("question-img").src = currentQuiz.image;
+            document.getElementById("quiz-hint").textContent = currentQuiz.hint; 
+            document.getElementById("answer-input").value = ""; 
+
+            var reviewBtn = document.getElementById("review-btn");
+            if (currentQuestionIndex > 0) {
+                reviewBtn.classList.remove("hidden");
+            } else {
+                reviewBtn.classList.add("hidden");
+            }
+
+            if (myUniqueKey) {
+                database.ref('quiz_event/scores/' + myUniqueKey).update({
+                    currentStage: (currentQuestionIndex + 1)
+                });
+            }
+        }
+
+        /* ================= 振り返りモーダルの処理群 ================= */
+        function openReviewModal() {
+            reviewTargetIndex = currentQuestionIndex - 1;
+            updateReviewModalContent();
+            document.getElementById("review-modal").classList.remove("hidden");
+        }
+
+        function closeReviewModal() {
+            document.getElementById("review-modal").classList.add("hidden");
+        }
+
+        function closeReviewModalOnOverlay(event) {
+            if (event.target.id === "review-modal") {
+                closeReviewModal();
+            }
+        }
+
+        function navigateReview(direction) {
+            var nextIndex = reviewTargetIndex + direction;
+            if (nextIndex >= 0 && nextIndex < currentQuestionIndex) {
+                reviewTargetIndex = nextIndex;
+                updateReviewModalContent();
+            }
+        }
+
+        function updateReviewModalContent() {
+            var targetQuiz = quizData[reviewTargetIndex];
+            document.getElementById("modal-quiz-title").textContent = targetQuiz.title + "（振り返り）";
+            document.getElementById("modal-question-img").src = targetQuiz.image;
+            
+            var ansText = Array.isArray(targetQuiz.answer) ? targetQuiz.answer.join(" または ") : targetQuiz.answer;
+            document.getElementById("modal-quiz-answer").textContent = "正解： " + ansText;
+
+            document.getElementById("modal-prev-btn").disabled = (reviewTargetIndex === 0);
+            document.getElementById("modal-next-btn").disabled = (reviewTargetIndex === currentQuestionIndex - 1);
+        }
+        /* ================================================================= */
+
+        function checkAnswer() {
+            var userAnswer = document.getElementById("answer-input").value.trim();
+            var correctAnswer = quizData[currentQuestionIndex].answer;
+
+            document.getElementById("quiz-screen").classList.add("hidden");
+            
+            var isCorrect = false;
+            if (Array.isArray(correctAnswer)) {
+                isCorrect = correctAnswer.includes(userAnswer);
+            } else {
+                isCorrect = (userAnswer === correctAnswer);
+            }
+
+            if (isCorrect) {
+                playSe("se-correct");
+                document.getElementById("correct-screen").classList.remove("hidden");
+                launchCustomTape(40);
+            } else {
+                playSe("se-incorrect");
+                
+                document.body.classList.add("gloom-bg");
+                var card = document.getElementById("main-card");
+                card.classList.remove("shake-animation");
+                void card.offsetWidth; 
+                card.classList.add("shake-animation");
+                
+                timeLeft = timeLeft - (5 * 60);
+                if (timeLeft < 0) timeLeft = 0;
+                updateTimerDisplay();
+                document.getElementById("incorrect-screen").classList.remove("hidden");
+            }
+        }
+
+        function launchCustomTape(count) {
+            var layer = document.getElementById("effect-layer");
+            layer.innerHTML = ""; 
+            var colors = ["#ffea00", "#ff0055", "#00ccff", "#39ff14", "#ff9900", "#e040fb"];
+            
+            for (var i = 0; i < count; i++) {
+                var p = document.createElement("div");
+                p.className = "tape-particle";
+                var fromLeft = Math.random() > 0.5;
+                p.style.left = fromLeft ? "5%" : "90%";
+                p.style.top = "85%";
+                p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                p.style.width = (Math.random() * 4 + 4) + "px";
+                p.style.height = (Math.random() * 20 + 20) + "px";
+                layer.appendChild(p);
+                animateParticle(p, fromLeft);
+            }
+        }
+
+        function animateParticle(el, fromLeft) {
+            var x = fromLeft ? window.innerWidth * 0.05 : window.innerWidth * 0.9;
+            var y = window.innerHeight * 0.85;
+            var speedX = fromLeft ? (Math.random() * 12 + 8) : -(Math.random() * 12 + 8);
+            var speedY = -(Math.random() * 20 + 15); 
+            var gravity = 0.8;
+            var rotation = Math.random() * 360;
+            var rotSpeed = Math.random() * 15 - 7;
+
+            var timer = setInterval(function() {
+                x += speedX;
+                speedY += gravity;
+                y += speedY;
+                rotation += rotSpeed;
+                el.style.left = x + "px";
+                el.style.top = y + "px";
+                el.style.transform = "rotate(" + rotation + "deg) scale(" + (1 - (speedY+20)/60) + ")";
+                
+                if (y > window.innerHeight + 50 || x < -50 || x > window.innerWidth + 50) {
+                    clearInterval(timer);
+                    if(el.parentNode) el.parentNode.removeChild(el);
+                }
+            }, 20);
+        }
+
+        function nextQuestion() {
+            document.getElementById("effect-layer").innerHTML = ""; 
+            currentQuestionIndex++;
+            document.getElementById("correct-screen").classList.add("hidden");
+            
+            if (currentQuestionIndex < quizData.length) {
+                checkBgmTime();
+                loadQuestion();
+                document.getElementById("quiz-screen").classList.remove("hidden");
+            } else {
+                clearInterval(timerInterval);
+                stopAllBgm();
+                playBgm("bgm-clear"); 
+                
+                document.getElementById("timer-display").classList.add("hidden");
+                
+                var timeSpent = totalTime - timeLeft;
+                var spentMinutes = Math.floor(timeSpent / 60);
+                var spentSeconds = timeSpent % 60;
+                var timeString = spentMinutes + "分" + spentSeconds + "秒";
+                
+                document.getElementById("res-campus").textContent = campusName;
+                document.getElementById("res-team").textContent = teamName;
+                document.getElementById("clear-time-output").textContent = timeString;
+                document.getElementById("res-datetime").textContent = startDateTimeStr;
+
+                localStorage.setItem("quiz_cleared", "true");
+                checkFailureStatus();
+
+                if (myUniqueKey) {
+                    database.ref('quiz_event/scores/' + myUniqueKey).set({
+                        campus: campusName,
+                        name: teamName,
+                        status: "cleared",
+                        currentStage: 6, 
+                        timeSpent: timeSpent,
+                        timeString: timeString,
+                        dateTime: startDateTimeStr
+                    });
+                }
+
+                document.getElementById("clear-screen").classList.remove("hidden");
+                launchCustomTape(120);
+            }
+        }
+
+        function backToQuiz() {
+            document.body.classList.remove("gloom-bg");
+            document.getElementById("main-card").classList.remove("shake-animation");
+
+            document.getElementById("incorrect-screen").classList.add("hidden");
+            if (timeLeft <= 0) {
+                triggerTimeUp();
+            } else {
+                checkBgmTime();
+                document.getElementById("quiz-screen").classList.remove("hidden");
+            }
+        }
+
+        function countdown() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateTimerDisplay();
+                checkBgmTime(); 
+            } else {
+                triggerTimeUp();
+            }
+        }
+
+        function checkBgmTime() {
+            if (timeLeft <= 0) return;
+            if (timeLeft <= 10 * 60) {
+                playBgm("bgm-hurry");
+            } else {
+                playBgm("bgm-normal");
+            }
+        }
+
+        function triggerTimeUp() {
+            clearInterval(timerInterval);
+            stopAllBgm();
+            playBgm("bgm-timeup"); 
+            
+            document.body.classList.remove("gloom-bg");
+            document.getElementById("main-card").classList.remove("shake-animation");
+
+            localStorage.setItem("quiz_failed", "true");
+            checkFailureStatus();
+
+            document.getElementById("timer-display").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("correct-screen").classList.add("hidden");
+            document.getElementById("incorrect-screen").classList.add("hidden");
+            
+            document.getElementById("fail-campus").textContent = campusName;
+            document.getElementById("fail-team").textContent = teamName;
+            document.getElementById("fail-point-output").textContent = quizData[currentQuestionIndex].title;
+
+            if (myUniqueKey) {
+                database.ref('quiz_event/scores/' + myUniqueKey).update({
+                    status: "failed",
+                    timeString: quizData[currentQuestionIndex].title + "で脱落"
+                });
+            }
+
+            document.getElementById("timeup-screen").classList.remove("hidden");
+        }
+
+        function updateTimerDisplay() {
+            var minutes = Math.floor(timeLeft / 60);
+            var seconds = timeLeft % 60;
+            var mStr = minutes < 10 ? "0" + minutes : minutes;
+            var sStr = seconds < 10 ? "0" + seconds : seconds;
+            document.getElementById("timer-text").textContent = "残り時間 " + mStr + ":" + sStr;
+        }
+
+        function displayRanking(scoresArray) {
+            var clearedPlayers = scoresArray.filter(function(p) { return p.status === "cleared"; });
+            clearedPlayers.sort(function(a, b) { return a.timeSpent - b.timeSpent; });
+            
+            var targetBodes = ["start-ranking-body", "clear-ranking-body", "fail-ranking-body"];
+
+            targetBodes.forEach(function(bodyId) {
+                var tbody = document.getElementById(bodyId);
+                if (!tbody) return;
+                tbody.innerHTML = "";
+
+                for (var i = 0; i < 3; i++) {
+                    var tr = document.createElement("tr");
+                    var tdRank = document.createElement("td");
+                    var tdCampus = document.createElement("td");
+                    var tdName = document.createElement("td");
+                    var tdTime = document.createElement("td");
+
+                    tdRank.textContent = (i + 1) + "位";
+                    tdRank.style.fontWeight = "bold";
+                    
+                    if (clearedPlayers[i]) {
+                        tdCampus.textContent = clearedPlayers[i].campus;
+                        tdName.textContent = clearedPlayers[i].name;
+                        tdTime.textContent = clearedPlayers[i].timeString;
+                        tdTime.style.color = "#28a745";
+                        tdTime.style.fontWeight = "bold";
+                        
+                        if (bodyId === "start-ranking-body") {
+                            var tdDate = document.createElement("td");
+                            tdDate.textContent = clearedPlayers[i].dateTime || "---";
+                        }
+                    } else {
+                        tdCampus.textContent = "---";
+                        tdName.textContent = "---";
+                        tdTime.textContent = "---";
+                        if (bodyId === "start-ranking-body") {
+                            var tdDate = document.createElement("td");
+                            tdDate.textContent = "---";
+                        }
+                    }
+
+                    tr.appendChild(tdRank);
+                    tr.appendChild(tdCampus);
+                    tr.appendChild(tdName);
+                    tr.appendChild(tdTime);
+                    if (bodyId === "start-ranking-body" && tdDate) tr.appendChild(tdDate);
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+
+        function displayProgressStats(scoresArray) {
+            var totalTeams = scoresArray.length;
+            if (totalTeams === 0) return;
+
+            var counts = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, clear: 0 };
+
+            scoresArray.forEach(function(p) {
+                var stage = p.currentStage || 1;
+                if (stage >= 1) counts.q1++;
+                if (stage >= 2) counts.q2++;
+                if (stage >= 3) counts.q3++;
+                if (stage >= 4) counts.q4++;
+                if (stage >= 5) counts.q5++;
+                if (stage >= 6 || p.status === "cleared") counts.clear++;
+            });
+
+            var pct = {
+                q1: Math.round((counts.q1 / totalTeams) * 100),
+                q2: Math.round((counts.q2 / totalTeams) * 100),
+                q3: Math.round((counts.q3 / totalTeams) * 100),
+                q4: Math.round((counts.q4 / totalTeams) * 100),
+                q5: Math.round((counts.q5 / totalTeams) * 100),
+                clear: Math.round((counts.clear / totalTeams) * 100)
+            };
+
+            function buildProgressHTML() {
+                return `
+                    <strong style="color:#4b6584; font-size:14px; display:block; margin-bottom:10px; text-align:center;">📊 現在のイベント全体データ（総参加：${totalTeams}組）</strong>
+                    
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label"><span>✨ 全問完全クリア！</span><span>${pct.clear}% (${counts.clear}組)</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill cleared" style="width: ${pct.clear}%"></div></div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label"><span>問 5 まで到達</span><span>${pct.q5}%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${pct.q5}%"></div></div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label"><span>問 4 まで到達</span><span>${pct.q4}%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${pct.q4}%"></div></div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label"><span>問 3 まで到達</span><span>${pct.q3}%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${pct.q3}%"></div></div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label"><span>問 2 まで到達</span><span>${pct.q2}%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${pct.q2}%"></div></div>
+                    </div>
+                `;
+            }
+
+            var clearBox = document.getElementById("clear-progress-box");
+            if (clearBox) clearBox.innerHTML = buildProgressHTML();
+
+            var failBox = document.getElementById("fail-progress-box");
+            if (failBox) failBox.innerHTML = buildProgressHTML();
+        }
+    </script>
+</body>
+</html>
