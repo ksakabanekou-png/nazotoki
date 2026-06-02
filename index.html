@@ -428,34 +428,42 @@
                 display: block; /* 自然な縦スクロールにする */
             }
         
-            /* --- ヘッダーエリア（音量とタイマーを1行に並べる） --- */
+            /* --- ヘッダーエリア（音量とタイマーを最上部にコンパクトに配置） --- */
             #mute-btn, #timer-display {
-                position: static !important; /* 絶対配置を解除して並べる */
+                position: static !important; /* 絶対配置を解除 */
                 box-sizing: border-box;
+                height: 40px; /* 高さを揃える */
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                margin-top: 5px;
             }
         
-            /* 2つのボタンを上部で横並びにするためのコンテナ（body直下に配置を想定、または自動並び替え） */
+            /* 左側の音量ボタン（横幅を小さめに） */
             #mute-btn {
                 float: left;
-                width: 42%;
-                margin-top: 10px;
+                width: 35%;
                 margin-left: 2%;
-                padding: 10px 5px;
-                font-size: 13px;
-                text-align: center;
+                padding: 0 5px;
+                font-size: 12px;
             }
         
+            /* 右側のタイマー（文字サイズを調整し、余白を削減） */
             #timer-display {
                 float: right;
-                width: 52%;
-                margin-top: 10px;
+                width: 57%;
                 margin-right: 2%;
-                padding: 8px 5px;
-                font-size: 14px;
-                justify-content: center;
+                padding: 0 8px;
+                font-size: 14px; /* 文字がはみ出さないサイズ */
+                gap: 4px;        /* 絵文字と時間の隙間を狭く */
             }
         
-            /* 回り込みを解除してメインカードへの影響を防ぐ */
+            /* 砂時計のアニメーションを少し小さく */
+            .hourglass-anime {
+                font-size: 14px;
+            }
+        
+            /* 回り込み解除 */
             body::after {
                 content: "";
                 display: block;
@@ -468,9 +476,9 @@
                 max-width: 100%;
                 box-sizing: border-box;
                 padding: 20px 15px;
-                margin-top: 20px; /* 横並びにしたので、上の余白は少なめでOK */
+                margin-top: 15px;
                 margin-bottom: 20px;
-                clear: both; /* ボタンの回り込みを完全に遮断 */
+                clear: both;
             }
         
             /* --- 入力欄（校舎名・チーム名・解答欄） --- */
