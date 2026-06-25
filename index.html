@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ⑧ HP自体のタイトルを変更 -->
     <title>国大セミナー赤羽校 塾長からの挑戦状</title>
 
-    <!-- ⑨ サムネイル設定（OGP画像など） -->
     <meta property="og:title" content="国大セミナー赤羽校 塾長からの挑戦状">
     <meta property="og:description" content="赤羽校の塾長が仕掛けた5つの謎を解き明かせ！">
     <meta property="og:image" content="samune.png">
@@ -31,7 +29,6 @@
             scroll-behavior: smooth;
         }
 
-        /* 右上のタイマーデザイン */
         #timer-display {
             position: absolute;
             top: 20px;
@@ -95,7 +92,6 @@
 
         .hidden { display: none !important; }
 
-        /* ⑦ トップタイトルの装飾強化（かっこいいデザイン） */
         .main-title-container {
             margin-bottom: 25px;
             padding: 15px;
@@ -139,7 +135,6 @@
             margin-right: auto;
         }
 
-        /* ③ スマホでもスッキリ見える改行対応プレゼントボックス */
         .present-box {
             background: linear-gradient(135deg, #fff9e6, #fff3cd);
             border: 2px dashed #ffc107;
@@ -176,7 +171,7 @@
             display: inline-block;
         }
 
-        /* ⑤ ⑥ 赤羽校HPリンクバナーのスタイル */
+        /* HPリンクボックスとボタンを完全にセンター寄せる修正 */
         .hp-link-box {
             background: #f5f6fa;
             border: 1px solid #dcdde1;
@@ -185,12 +180,17 @@
             margin: 15px auto;
             width: 90%;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .hp-link-title {
             font-size: 12px;
             color: #666;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: bold;
+            text-align: center;
         }
         .hp-link-btn {
             display: inline-block;
@@ -203,12 +203,12 @@
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,168,255,0.3);
             transition: background-color 0.2s;
+            text-align: center;
         }
         .hp-link-btn:hover {
             background-color: #0097e6;
         }
 
-        /* ⑤ 再テストボタン（リトライ用） */
         .retry-btn {
             background-color: #f7b731;
             color: #fff;
@@ -224,7 +224,6 @@
         }
         .retry-btn:hover { background-color: #eba413; }
 
-        /* SNSシェアボタン */
         .share-section {
             margin: 25px 0;
             background: #f8f9fa;
@@ -313,11 +312,17 @@
         button:hover { background-color: #0056b3; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
 
+        /* クイズ開始ボタンをセンターに配置する修正 */
+        .start-btn-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 10px;
+        }
         .start-btn {
             background-color: #28a745;
             font-size: 20px;
             padding: 15px 40px;
-            margin-top: 10px;
         }
         .start-btn:hover { background-color: #218838; }
 
@@ -328,13 +333,20 @@
             color: #444;
             font-size: 14px;
             line-height: 1.6;
+            width: 100%;
         }
 
+        /* 累積参加数カウンターをセンターに寄せる修正 */
+        .counter-container-box {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 25px;
+        }
         .counter-box {
             background: linear-gradient(135deg, #eef2f7, #dfe5ed);
             padding: 12px 20px;
             border-radius: 10px;
-            margin-bottom: 25px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -504,49 +516,52 @@
         }
         .progress-bar-fill.cleared { background: linear-gradient(90deg, #56d77e, #28a745); }
 
+        /* レスポンシブ（スマホ用）のスタイル指定 */
         @media screen and (max-width: 768px) {
             body {
                 padding: 10px;
                 display: block;
             }
-            #mute-btn, #timer-display {
-                position: static !important;
+            .header-nav-block {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 5px;
+                margin-bottom: 5px;
                 box-sizing: border-box;
+                padding: 0 2%;
+            }
+            #mute-btn {
+                position: static !important;
+                width: 38% !important;
                 height: 40px;
+                font-size: 12px;
                 display: inline-flex !important;
                 align-items: center;
                 justify-content: center;
-                margin-top: 5px;
-            }
-            #mute-btn {
-                float: left;
-                width: 35%;
-                margin-left: 2%;
-                padding: 0 5px;
-                font-size: 12px;
+                box-sizing: border-box;
             }
             #timer-display {
-                float: right;
-                width: 57%;
-                margin-right: 2%;
-                padding: 0 8px;
+                position: static !important;
+                width: 58% !important;
+                height: 40px;
                 font-size: 14px;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
                 gap: 4px;
+                box-sizing: border-box;
             }
             .hourglass-anime { font-size: 14px; }
-            body::after {
-                content: "";
-                display: block;
-                clear: both;
-            }
+            
             .container {
                 width: 100%;
                 max-width: 100%;
                 box-sizing: border-box;
                 padding: 20px 15px;
-                margin-top: 15px;
+                margin-top: 10px;
                 margin-bottom: 20px;
-                clear: both;
             }
             .input-style {
                 width: 100% !important;
@@ -586,18 +601,17 @@
     <audio id="bgm-clear" src="music5.mp3" loop></audio>
     <audio id="bgm-timeup" src="music6.mp3" loop></audio>
 
-    <button id="mute-btn" onclick="toggleMute()">🔊 音量：ON</button>
-
-    <div id="timer-display" class="hidden">
-        <span class="hourglass-anime">⏳</span>
-        <span id="timer-text">残り時間 30:00</span>
+    <div class="header-nav-block">
+        <button id="mute-btn" onclick="toggleMute()">🔊 音量：ON</button>
+        <div id="timer-display" class="hidden">
+            <span class="hourglass-anime">⏳</span>
+            <span id="timer-text">残り時間 30:00</span>
+        </div>
     </div>
 
     <div id="main-card" class="container">
         
-        <!-- ================= 最初のページ (スタート画面) ================= -->
         <div id="start-screen">
-            <!-- ⑦ 装飾を施したかっこいいメインタイトル領域 -->
             <div class="main-title-container">
                 <div class="main-title-sub">KOKUDAI SEMINAR AKABANE</div>
                 <div class="main-title-main">国大セミナー赤羽校<br>塾長からの挑戦状</div>
@@ -606,14 +620,11 @@
             <div class="rule-list">
                 <div>・制限時間は <span style="font-weight: bold; color: #007bff;">30分間</span> です。</div>
                 <div>・全部で <span style="font-weight: bold;">5問</span> 出題されます。</div>
-                <div><div>・<span style="color: #dc3545; font-weight: bold;">誤答をすると持ち時間が 5分 減ります。</span></div>
-                <!-- ① 追加：音量注意の記載 -->
+                <div>・<span style="color: #dc3545; font-weight: bold;">誤答をすると持ち時間が 5分 減ります。</span></div>
                 <div style="color: #e44d26; font-weight: bold;">・ゲーム中は効果音やBGMが流れます。音量にご注意ください。（左上のボタンでいつでもOFFにできます）</div>
-                <!-- ④ 追加：初回挑戦時のみランキング登録される旨を追記 -->
-                <div style="color: #333; font-weight: bold;">・何度でも再挑戦可能ですが、<span style="color: #007bff;">ランキングは「初回挑戦時」のクリアタイムのみ</span>記録されます。</div>
+                <div style="color: #007bff; font-weight: bold;">・何度でも再挑戦可能ですが、ランキングは「初回挑戦時」のクリアタイムのみ記録されます。</div>
             </div>
 
-            <!-- ③ 変更・追加：指示通りの完璧な改行とスマホ用デザイン -->
             <div class="present-box">
                 <div class="present-title">🎁 参加チャレンジ特典！</div>
                 <div class="present-text-br">
@@ -625,7 +636,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="counter-container-box">
                 <div class="counter-box">
                     <span class="counter-label">現在の累積参加数:</span>
                     <div id="counter-numbers" class="counter-number-wrapper"></div>
@@ -660,9 +671,10 @@
                 <input type="text" id="team-name-input" class="input-style" style="width:100%;" placeholder="例：ナゾ解きマスター" autocomplete="off" maxlength="15">
             </div>
 
-            <button id="start-btn" class="start-btn" onclick="startSequence()">クイズを開始する</button>
+            <div class="start-btn-container">
+                <button id="start-btn" class="start-btn" onclick="startSequence()">クイズを開始する</button>
+            </div>
 
-            <!-- ⑥ 追加：国大セミナー赤羽校HPへのリンクエリア -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
                 <a href="https://www.kokudai.com/campus/akabane" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
@@ -720,7 +732,6 @@
             <button onclick="backToQuiz()">戻る</button>
         </div>
 
-        <!-- ================= 最後のページ A (クリア画面) ================= -->
         <div id="clear-screen" class="hidden">
             <div class="result-title" style="color: #ffc107; font-size: 32px;">🎉 すばらしい！<br>100点満点だ！</div>
             <p style="font-size: 16px; margin-bottom: 10px;">おめでとうございます！見事に脱出成功です！</p>
@@ -738,10 +749,8 @@
                 <button class="share-btn" onclick="shareResult()">
                     <span>📱 友達に結果を共有する</span>
                 </button>
-                <p style="font-size: 11px; color: #888; margin-top: 6px; margin-bottom: 0;">※LINEやSNS等へ文面をコピーして簡単に送れます</p>
             </div>
 
-            <!-- ⑤ ⑥ クリア画面用のHPリンクとボタン -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
                 <a href="https://www.kokudai.com/campus/akabane" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
@@ -775,9 +784,7 @@
             <div id="clear-progress-box" class="progress-summary-box"></div>
         </div>
 
-        <!-- ================= 最後のページ B (タイムアップ画面) ================= -->
         <div id="timeup-screen" class="hidden">
-            <!-- ⑤ 変更：「挑戦失敗です…」 -->
             <div class="result-title incorrect-text" style="color:#dc3545;">💀 タイムアップ！</div>
             <p style="font-size: 16px;">制限時間が終了しました。挑戦失敗です…</p>
             
@@ -787,7 +794,6 @@
                 <div class="result-info-item" style="margin-top: 10px;">【脱落ポイント】 <strong id="fail-point-output" style="color:#dc3545;">問 1</strong></div>
             </div>
 
-            <!-- ⑤ 追加：挑戦してくれたお礼と、失敗時でも消しゴムプレゼントの特別告知 -->
             <div class="present-box" style="border-color: #dc3545; background: linear-gradient(135deg, #fff5f5, #ffe3e3);">
                 <div class="present-title" style="color: #dc3545;">🎁 挑戦してくれたあなたへ！</div>
                 <div class="present-text-br" style="font-size:13px;">
@@ -799,7 +805,6 @@
                 </div>
             </div>
 
-            <!-- ⑤ 追加：タイムアップ画面用SNSシェア機能 -->
             <div class="share-section">
                 <p style="font-size: 13px; font-weight: bold; color: #555; margin-top: 0; margin-bottom: 8px;">＼ 悔しさを友達にシェアしよう！ ／</p>
                 <button class="share-btn" style="background-color: #6c757d; box-shadow: 0 4px 6px rgba(108, 117, 125, 0.2);" onclick="shareFailResult()">
@@ -807,7 +812,6 @@
                 </button>
             </div>
 
-            <!-- ⑤ ⑥ 失敗画面用のHPリンクと「再テスト」ボタン -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
                 <a href="https://www.kokudai.com/campus/akabane" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
@@ -879,7 +883,6 @@
         var isMuted = false;
         var formattedClearTime = "00:00"; 
 
-        // ② 音量をさらに半分（0.2から0.1）に調整
         const BGM_VOLUME = 0.1;
 
         window.onload = function() {
@@ -889,7 +892,6 @@
                 var allScores = [];
                 snapshot.forEach(function(childSnapshot) {
                     var val = childSnapshot.val();
-                    // ④ データベース側でも、isFirstAttemptがfalseのデータはランキング対象から除外して読み込む
                     if (val.isFirstAttempt !== false) {
                         allScores.push(val);
                     }
@@ -913,7 +915,6 @@
         }
 
         function triggerDeviceUnlock() {
-            // ローカルに保存されている自身の過去の挑戦ステータス・カウント数をリセット
             localStorage.removeItem("quiz_has_attempted");
             localStorage.removeItem("quiz_attempt_count");
             alert("この端末のローカル挑戦履歴（カウント数など）をクリアしました。");
@@ -945,6 +946,7 @@
             var countStr = String(totalParticipants);
             if (countStr.length < 3) countStr = ("000" + countStr).slice(-3);
             var counterContainer = document.getElementById("counter-numbers");
+            if (!counterContainer) return;
             counterContainer.innerHTML = "";
             for (var i = 0; i < countStr.length; i++) {
                 var digitDiv = document.createElement("div");
@@ -1027,30 +1029,25 @@
             if (!campusName) { alert("学年を選択してください。"); return; }
             if (teamName === "") { alert("ニックネームを入力してください。"); return; }
 
-            // ④ 同一端末からのカウント制御
             var hasAttempted = localStorage.getItem("quiz_has_attempted");
             var currentCount = parseInt(localStorage.getItem("quiz_attempt_count") || "0");
             
-            // 初回挑戦かリトライかを判定
             var isFirst = true;
             if (hasAttempted === "true") {
                 isFirst = false;
             }
             
-            // 端末内の挑戦回数を+1して保存
             localStorage.setItem("quiz_has_attempted", "true");
             localStorage.setItem("quiz_attempt_count", currentCount + 1);
 
             startDateTimeStr = getFormattedDateTime();
             
-            // 全体の累積参加カウンターは新規挑戦の時のみ加算
             if (isFirst) {
                 database.ref('quiz_event/total_counter').transaction(function(c) {
                     return (c || 0) + 1;
                 });
             }
 
-            // グローバルスコープ等で今回の状態を保持
             window.currentPlayIsFirst = isFirst;
 
             document.getElementById("start-screen").classList.add("hidden");
@@ -1077,7 +1074,6 @@
                     window.scrollTo(0, 0);
                     playBgm("bgm-normal");
                     
-                    // タイマーリセット
                     timeLeft = totalTime;
                     updateTimerDisplay();
                     
@@ -1182,7 +1178,6 @@
             document.getElementById("clear-time-output").textContent = clearTimeStr;
             document.getElementById("res-datetime").textContent = startDateTimeStr;
 
-            // ④ リトライ挑戦ならリザルト画面にその旨を表示
             var noticeBox = document.getElementById("first-time-notice");
             if (!window.currentPlayIsFirst) {
                 noticeBox.style.display = "block";
@@ -1194,7 +1189,6 @@
             document.getElementById("clear-screen").classList.remove("hidden");
             window.scrollTo(0, 0);
 
-            // Firebaseへ結果送信（④ isFirstAttemptフラグを持たせる）
             database.ref('quiz_event/scores').push({
                 campusName: campusName,
                 teamName: teamName,
@@ -1206,25 +1200,22 @@
             });
         }
 
-        // ③ ⑤ クリア用シェア
         function shareResult() {
             var shareText = "国大セミナー赤羽校の塾長を倒してみない？私のクリアタイムは" + formattedClearTime + "だったよ！\n#国大セミナー #赤羽校 #塾長からの挑戦状\nリンクから君も挑戦だ！👇";
             executeNativeShare(shareText);
         }
 
-        // ⑤ タイムアップ用シェア
         function shareFailResult() {
             var shareText = "国大セミナー赤羽校の問題、むずかしすぎる…！みんなも解けるか塾長からの挑戦状にチャレンジしてみて！\n#国大セミナー #赤羽校 #塾長からの挑戦状\n問題に挑戦する👇";
             executeNativeShare(shareText);
         }
 
-        // 共有処理の共通化
         function executeNativeShare(text) {
             if (navigator.share) {
                 navigator.share({ text: text }).catch(function(e) { console.log(e); });
             } else {
                 navigator.clipboard.writeText(text).then(function() {
-                    alert("文章をコピーしました！LINEやSNSに貼り付けて友達に送ってね！\n\n" + text);
+                    alert("文章をコピーしました！LINEやSNSに貼り付けて友達に送ね！\n\n" + text);
                 }).catch(function() {
                     alert("文章を選択してコピーしてください：\n\n" + text);
                 });
@@ -1243,7 +1234,6 @@
             document.getElementById("timeup-screen").classList.remove("hidden");
             window.scrollTo(0, 0);
 
-            // Firebaseへ結果送信（④ isFirstAttemptフラグを持たせる）
             database.ref('quiz_event/scores').push({
                 campusName: campusName,
                 teamName: teamName,
@@ -1255,14 +1245,12 @@
             });
         }
 
-        // ⑤ 再テストでトップページへ戻る処理
         function goToStartScreen() {
             stopAllBgm();
             document.getElementById("clear-screen").classList.add("hidden");
             document.getElementById("timeup-screen").classList.add("hidden");
             document.getElementById("start-screen").classList.remove("hidden");
             
-            // 入力欄をクリア
             document.getElementById("answer-input").value = "";
             window.scrollTo(0, 0);
         }
