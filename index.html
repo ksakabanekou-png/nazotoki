@@ -171,7 +171,6 @@
             display: inline-block;
         }
 
-        /* HPリンクボックスとボタンを完全にセンター寄せる修正 */
         .hp-link-box {
             background: #f5f6fa;
             border: 1px solid #dcdde1;
@@ -312,7 +311,6 @@
         button:hover { background-color: #0056b3; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        /* クイズ開始ボタンをセンターに配置する修正 */
         .start-btn-container {
             display: flex;
             justify-content: center;
@@ -336,7 +334,6 @@
             width: 100%;
         }
 
-        /* 累積参加数カウンターをセンターに寄せる修正 */
         .counter-container-box {
             display: flex;
             justify-content: center;
@@ -446,6 +443,7 @@
             50% { transform: scale(1.1); }
         }
 
+        /* ページネーション付きランキングエリア */
         .ranking-box {
             margin-top: 20px;
             padding: 15px;
@@ -460,11 +458,46 @@
             margin-top: 10px;
         }
         .ranking-table th, .ranking-table td {
-            padding: 10px 6px;
+            padding: 10px 4px;
             border-bottom: 1px solid #ddd;
             font-size: 13px;
         }
         .ranking-table th { background-color: #e9ecef; color: #333; }
+        
+        /* 初回挑戦の強調表示 */
+        .first-attempt-badge {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .retry-attempt-badge {
+            color: #555;
+        }
+
+        /* ページネーションボタン用スタイル */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 12px;
+        }
+        .page-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .page-btn:hover:not(:disabled) { background-color: #5a6268; }
+        .page-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        .page-info {
+            font-size: 13px;
+            font-weight: bold;
+            color: #444;
+        }
          
         .result-info-box {
             background: #f1f9f5;
@@ -516,7 +549,6 @@
         }
         .progress-bar-fill.cleared { background: linear-gradient(90deg, #56d77e, #28a745); }
 
-        /* レスポンシブ（スマホ用）のスタイル指定 */
         @media screen and (max-width: 768px) {
             body {
                 padding: 10px;
@@ -582,7 +614,7 @@
             .counter-digit { font-size: 18px; padding: 2px 6px; }
             .ranking-table th, .ranking-table td {
                 font-size: 11px;
-                padding: 8px 4px;
+                padding: 8px 2px;
             }
         }
     </style>
@@ -611,6 +643,7 @@
 
     <div id="main-card" class="container">
         
+        <!-- ================= スタート画面 ================= -->
         <div id="start-screen">
             <div class="main-title-container">
                 <div class="main-title-sub">KOKUDAI SEMINAR AKABANE</div>
@@ -622,7 +655,7 @@
                 <div>・全部で <span style="font-weight: bold;">5問</span> 出題されます。</div>
                 <div>・<span style="color: #dc3545; font-weight: bold;">誤答をすると持ち時間が 5分 減ります。</span></div>
                 <div style="color: #e44d26; font-weight: bold;">・ゲーム中は効果音やBGMが流れます。音量にご注意ください。（左上のボタンでいつでもOFFにできます）</div>
-                <div style="color: #007bff; font-weight: bold;">・何度でも再挑戦可能ですが、ランキングは「初回挑戦時」のクリアタイムのみ記録されます。</div>
+                <div style="color: #007bff; font-weight: bold;">・何度でも再挑戦可能で、クリアした記録は全てランキングに反映されます。</div>
             </div>
 
             <div class="present-box">
@@ -675,9 +708,10 @@
                 <button id="start-btn" class="start-btn" onclick="startSequence()">クイズを開始する</button>
             </div>
 
+            <!-- ② 校舎HPリンクの修正 -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
-                <a href="https://www.kokudai.com/campus/akabane" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
+                <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
             </div>
 
             <div class="promo-banner-container">
@@ -686,19 +720,26 @@
                 </a>
             </div>
 
+            <!-- ③ ページネーション付き全データランキング（トップ画面） -->
             <div class="ranking-box">
-                <strong style="color:#007bff;">🏆 トップ3 ランキング（初回挑戦記録）</strong>
+                <strong style="color:#007bff;">🏆 チャレンジャーランキング（全員記録）</strong>
                 <table class="ranking-table">
                     <thead>
                         <tr>
-                            <th style="width: 12%;">順位</th>
-                            <th style="width: 25%;">学年</th>
-                            <th style="width: 28%;">ニックネーム</th>
-                            <th style="width: 35%;">クリアタイム</th>
+                            <th style="width: 10%;">順位</th>
+                            <th style="width: 22%;">学年</th>
+                            <th style="width: 26%;">ニックネーム</th>
+                            <th style="width: 24%;">タイム</th>
+                            <th style="width: 18%;">挑戦回</th>
                         </tr>
                     </thead>
                     <tbody id="start-ranking-body"></tbody>
                 </table>
+                <div class="pagination-container">
+                    <button id="start-prev-btn" class="page-btn" onclick="changePage('start', -1)">◀前へ</button>
+                    <span id="start-page-info" class="page-info">1 / 1</span>
+                    <button id="start-next-btn" class="page-btn" onclick="changePage('start', 1)">次へ▶</button>
+                </div>
             </div>
 
             <div class="admin-links-container">
@@ -711,6 +752,7 @@
             <div id="countdown-text" class="ready-text">用意…</div>
         </div>
 
+        <!-- ================= クイズ画面 ================= -->
         <div id="quiz-screen" class="hidden">
             <div id="quiz-title" class="question-number">問 1</div>
             <img id="question-img" class="quiz-image" src="" alt="[画像が読み込めません]">
@@ -732,6 +774,7 @@
             <button onclick="backToQuiz()">戻る</button>
         </div>
 
+        <!-- ================= クリア画面 ================= -->
         <div id="clear-screen" class="hidden">
             <div class="result-title" style="color: #ffc107; font-size: 32px;">🎉 すばらしい！<br>100点満点だ！</div>
             <p style="font-size: 16px; margin-bottom: 10px;">おめでとうございます！見事に脱出成功です！</p>
@@ -740,7 +783,7 @@
                 <div class="result-info-item">【学年】 <span id="res-campus" style="font-weight:bold;">---</span></div>
                 <div class="result-info-item">【ニックネーム】 <span id="res-team" style="font-weight:bold;">---</span></div>
                 <div class="result-info-item" style="margin-top: 10px;">【今回のタイム】 <strong id="clear-time-output" style="color:#28a745;">00分00秒</strong></div>
-                <div class="result-info-item" id="first-time-notice" style="font-size:12px; color:#007bff; display:none; font-weight:bold; margin-top:5px;">⚠️ 今回は再挑戦（リトライ）のため、ランキングには初回の記録が維持されます。</div>
+                <div class="result-info-item">【今回の挑戦回数】 <span id="res-attempt-count" style="font-weight:bold;">1回目</span></div>
                 <div class="result-info-item" style="font-size:12px; color:#666; margin-top:10px;">【挑戦日時】 <span id="res-datetime">---</span></div>
             </div>
 
@@ -751,9 +794,10 @@
                 </button>
             </div>
 
+            <!-- ② 校舎HPリンクの修正 -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
-                <a href="https://www.kokudai.com/campus/akabane" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
+                <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
             </div>
 
             <div>
@@ -766,24 +810,32 @@
                 </a>
             </div>
             
+            <!-- ③ ページネーション付き全データランキング（クリア画面） -->
             <div class="ranking-box">
-                <strong style="color:#28a745;">🏆 現在のトップ3（初回挑戦記録）</strong>
+                <strong style="color:#28a745;">🏆 チャレンジャーランキング（全員記録）</strong>
                 <table class="ranking-table">
                     <thead>
                         <tr>
-                            <th style="width: 12%;">順位</th>
-                            <th style="width: 25%;">学年</th>
-                            <th style="width: 28%;">ニックネーム</th>
-                            <th style="width: 35%;">クリアタイム</th>
+                            <th style="width: 10%;">順位</th>
+                            <th style="width: 22%;">学年</th>
+                            <th style="width: 26%;">ニックネーム</th>
+                            <th style="width: 24%;">タイム</th>
+                            <th style="width: 18%;">挑戦回</th>
                         </tr>
                     </thead>
                     <tbody id="clear-ranking-body"></tbody>
                 </table>
+                <div class="pagination-container">
+                    <button id="clear-prev-btn" class="page-btn" onclick="changePage('clear', -1)">◀前へ</button>
+                    <span id="clear-page-info" class="page-info">1 / 1</span>
+                    <button id="clear-next-btn" class="page-btn" onclick="changePage('clear', 1)">次へ▶</button>
+                </div>
             </div>
 
             <div id="clear-progress-box" class="progress-summary-box"></div>
         </div>
 
+        <!-- ================= タイムアップ画面 ================= -->
         <div id="timeup-screen" class="hidden">
             <div class="result-title incorrect-text" style="color:#dc3545;">💀 タイムアップ！</div>
             <p style="font-size: 16px;">制限時間が終了しました。挑戦失敗です…</p>
@@ -792,6 +844,7 @@
                 <div class="result-info-item">【学年】 <span id="fail-campus" style="font-weight:bold;">---</span></div>
                 <div class="result-info-item">【ニックネーム】 <span id="fail-team" style="font-weight:bold;">---</span></div>
                 <div class="result-info-item" style="margin-top: 10px;">【脱落ポイント】 <strong id="fail-point-output" style="color:#dc3545;">問 1</strong></div>
+                <div class="result-info-item">【今回の挑戦回数】 <span id="fail-attempt-count" style="font-weight:bold;">1回目</span></div>
             </div>
 
             <div class="present-box" style="border-color: #dc3545; background: linear-gradient(135deg, #fff5f5, #ffe3e3);">
@@ -812,9 +865,10 @@
                 </button>
             </div>
 
+            <!-- ② 校舎HPリンクの修正 -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
-                <a href="https://www.kokudai.com/campus/akabane" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
+                <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
             </div>
 
             <div>
@@ -827,19 +881,26 @@
                 </a>
             </div>
 
+            <!-- ③ ページネーション付き全データランキング（失敗画面） -->
             <div class="ranking-box">
-                <strong style="color:#007bff;">🏆 ライバルたちのトップ3（初回挑戦記録）</strong>
+                <strong style="color:#007bff;">🏆 チャレンジャーランキング（全員記録）</strong>
                 <table class="ranking-table">
                     <thead>
                         <tr>
-                            <th style="width: 12%;">順位</th>
-                            <th style="width: 25%;">学年</th>
-                            <th style="width: 28%;">ニックネーム</th>
-                            <th style="width: 35%;">クリアタイム</th>
+                            <th style="width: 10%;">順位</th>
+                            <th style="width: 22%;">学年</th>
+                            <th style="width: 26%;">ニックネーム</th>
+                            <th style="width: 24%;">タイム</th>
+                            <th style="width: 18%;">挑戦回</th>
                         </tr>
                     </thead>
                     <tbody id="fail-ranking-body"></tbody>
                 </table>
+                <div class="pagination-container">
+                    <button id="fail-prev-btn" class="page-btn" onclick="changePage('fail', -1)">◀前へ</button>
+                    <span id="fail-page-info" class="page-info">1 / 1</span>
+                    <button id="fail-next-btn" class="page-btn" onclick="changePage('fail', 1)">次へ▶</button>
+                </div>
             </div>
 
             <div id="fail-progress-box" class="progress-summary-box"></div>
@@ -882,6 +943,11 @@
         var currentBgm = ""; 
         var isMuted = false;
         var formattedClearTime = "00:00"; 
+        
+        // ランキングのグローバル保持用変数
+        var cachedClearScores = [];
+        var currentPage = { start: 0, clear: 0, fail: 0 };
+        const ITEMS_PER_PAGE = 5;
 
         const BGM_VOLUME = 0.1;
 
@@ -892,11 +958,19 @@
                 var allScores = [];
                 snapshot.forEach(function(childSnapshot) {
                     var val = childSnapshot.val();
-                    if (val.isFirstAttempt !== false) {
-                        allScores.push(val);
-                    }
+                    allScores.push(val);
                 });
-                displayRanking(allScores);
+                
+                // ③ クリア者全員をランキング対象とし、タイム順（昇順）にソート
+                cachedClearScores = allScores.filter(function(s) { return s.status === "clear"; });
+                cachedClearScores.sort(function(a, b) { return a.clearTimeSeconds - b.clearTimeSeconds; });
+                
+                // ページ初期化
+                currentPage.start = 0;
+                currentPage.clear = 0;
+                currentPage.fail = 0;
+                
+                renderAllRankings();
                 displayProgressStats(allScores);
             });
 
@@ -1049,6 +1123,7 @@
             }
 
             window.currentPlayIsFirst = isFirst;
+            window.currentAttemptNumber = currentCount + 1; // 今回が何回目の挑戦かを記憶
 
             document.getElementById("start-screen").classList.add("hidden");
             document.getElementById("countdown-screen").classList.remove("hidden");
@@ -1177,13 +1252,7 @@
             document.getElementById("res-team").textContent = teamName;
             document.getElementById("clear-time-output").textContent = clearTimeStr;
             document.getElementById("res-datetime").textContent = startDateTimeStr;
-
-            var noticeBox = document.getElementById("first-time-notice");
-            if (!window.currentPlayIsFirst) {
-                noticeBox.style.display = "block";
-            } else {
-                noticeBox.style.display = "none";
-            }
+            document.getElementById("res-attempt-count").textContent = window.currentAttemptNumber + "回目";
 
             document.getElementById("timer-display").classList.add("hidden");
             document.getElementById("clear-screen").classList.remove("hidden");
@@ -1196,17 +1265,19 @@
                 dateTime: startDateTimeStr,
                 reachedIndex: quizData.length,
                 status: "clear",
-                isFirstAttempt: window.currentPlayIsFirst
+                isFirstAttempt: window.currentPlayIsFirst,
+                attemptNumber: window.currentAttemptNumber // ③ 何回目の挑戦でのクリアかを保存
             });
         }
 
+        // ① 友達に送る文面にURLを追加
         function shareResult() {
-            var shareText = "国大セミナー赤羽校の塾長を倒してみない？私のクリアタイムは" + formattedClearTime + "だったよ！\n#国大セミナー #赤羽校 #塾長からの挑戦状\nリンクから君も挑戦だ！👇";
+            var shareText = "国大セミナー赤羽校の塾長を倒してみない？私のクリアタイムは" + formattedClearTime + "だったよ！\n#国大セミナー #赤羽校 #塾長からの挑戦状\nリンクから君も挑戦だ！👇\nhttps://ksakabanekou-png.github.io/nazotoki/";
             executeNativeShare(shareText);
         }
 
         function shareFailResult() {
-            var shareText = "国大セミナー赤羽校の問題、むずかしすぎる…！みんなも解けるか塾長からの挑戦状にチャレンジしてみて！\n#国大セミナー #赤羽校 #塾長からの挑戦状\n問題に挑戦する👇";
+            var shareText = "国大セミナー赤羽校の問題、むずかしすぎる…！みんなも解けるか塾長からの挑戦状にチャレンジしてみて！\n#国大セミナー #赤羽校 #塾長からの挑戦状\n問題に挑戦する👇\nhttps://ksakabanekou-png.github.io/nazotoki/";
             executeNativeShare(shareText);
         }
 
@@ -1215,7 +1286,7 @@
                 navigator.share({ text: text }).catch(function(e) { console.log(e); });
             } else {
                 navigator.clipboard.writeText(text).then(function() {
-                    alert("文章をコピーしました！LINEやSNSに貼り付けて友達に送ね！\n\n" + text);
+                    alert("文章をコピーしました！LINEやSNSに貼り付けて友達に送ってね！\n\n" + text);
                 }).catch(function() {
                     alert("文章を選択してコピーしてください：\n\n" + text);
                 });
@@ -1229,6 +1300,7 @@
             document.getElementById("fail-campus").textContent = campusName;
             document.getElementById("fail-team").textContent = teamName;
             document.getElementById("fail-point-output").textContent = "問 " + (currentQuestionIndex + 1);
+            document.getElementById("fail-attempt-count").textContent = window.currentAttemptNumber + "回目";
             document.getElementById("quiz-screen").classList.add("hidden");
             document.getElementById("timer-display").classList.add("hidden");
             document.getElementById("timeup-screen").classList.remove("hidden");
@@ -1241,7 +1313,8 @@
                 dateTime: startDateTimeStr,
                 reachedIndex: currentQuestionIndex,
                 status: "fail",
-                isFirstAttempt: window.currentPlayIsFirst
+                isFirstAttempt: window.currentPlayIsFirst,
+                attemptNumber: window.currentAttemptNumber
             });
         }
 
@@ -1255,31 +1328,86 @@
             window.scrollTo(0, 0);
         }
 
-        function displayRanking(allScores) {
-            var clearGroup = allScores.filter(function(s) { return s.status === "clear"; });
-            clearGroup.sort(function(a, b) { return a.clearTimeSeconds - b.clearTimeSeconds; });
+        // ③ ページネーション描画対応の統合レンダリング関数
+        function renderAllRankings() {
+            renderSingleRanking('start');
+            renderSingleRanking('clear');
+            renderSingleRanking('fail');
+        }
+
+        function renderSingleRanking(targetKey) {
+            var tbody = document.getElementById(targetKey + "-ranking-body");
+            var prevBtn = document.getElementById(targetKey + "-prev-btn");
+            var nextBtn = document.getElementById(targetKey + "-next-btn");
+            var pageInfo = document.getElementById(targetKey + "-page-info");
+            
+            if (!tbody) return;
+
+            var totalItems = cachedClearScores.length;
+            var maxPage = Math.ceil(totalItems / ITEMS_PER_PAGE) - 1;
+            if (maxPage < 0) maxPage = 0;
+
+            // ページインデックスの境界チェック
+            if (currentPage[targetKey] > maxPage) currentPage[targetKey] = maxPage;
+            var currPage = currentPage[targetKey];
+
+            // ボタンの状態制御
+            if (prevBtn) prevBtn.disabled = (currPage === 0);
+            if (nextBtn) nextBtn.disabled = (currPage === maxPage || totalItems === 0);
+            if (pageInfo) pageInfo.textContent = (totalItems === 0 ? 1 : currPage + 1) + " / " + (maxPage + 1);
+
             var html = "";
-            var displayLimit = Math.min(clearGroup.length, 3);
-            for (var i = 0; i < 3; i++) {
-                if (i < displayLimit) {
-                    var s = clearGroup[i];
+            var startIdx = currPage * ITEMS_PER_PAGE;
+            var endIdx = Math.min(startIdx + ITEMS_PER_PAGE, totalItems);
+
+            // 5件分データ書き出し
+            for (var i = startIdx; i < startIdx + ITEMS_PER_PAGE; i++) {
+                if (i < endIdx) {
+                    var s = cachedClearScores[i];
                     var min = Math.floor(s.clearTimeSeconds / 60);
                     var sec = s.clearTimeSeconds % 60;
-                    html += "<tr><td>" + (i + 1) + "位</td><td>" + s.campusName + "</td><td>" + s.teamName + "</td><td>" + min + "分" + sec + "秒</td></tr>";
+                    
+                    // 挑戦回数表示の出し分け（データに存在しない旧データは暫定1回目として扱う）
+                    var attNum = s.attemptNumber || 1;
+                    var badge = "";
+                    if (attNum === 1) {
+                        badge = "<span class='first-attempt-badge'>初回クリア</span>";
+                    } else {
+                        badge = "<span class='retry-attempt-badge'>" + attNum + "回目</span>";
+                    }
+
+                    html += "<tr><td>" + (i + 1) + "位</td><td>" + s.campusName + "</td><td>" + s.teamName + "</td><td>" + min + "分" + sec + "秒</td><td>" + badge + "</td></tr>";
                 } else {
-                    html += "<tr><td>" + (i + 1) + "位</td><td>---</td><td>---</td><td>---</td></tr>";
+                    // 5桁に満たないダミー行
+                    html += "<tr><td>" + (i + 1) + "位</td><td>---</td><td>---</td><td>---</td><td>---</td></tr>";
                 }
             }
-            document.getElementById("start-ranking-body").innerHTML = html;
-            document.getElementById("clear-ranking-body").innerHTML = html;
-            document.getElementById("fail-ranking-body").innerHTML = html;
+            tbody.innerHTML = html;
+        }
+
+        // ③ ページ切り替え処理
+        function changePage(targetKey, direction) {
+            var totalItems = cachedClearScores.length;
+            var maxPage = Math.ceil(totalItems / ITEMS_PER_PAGE) - 1;
+            if (maxPage < 0) maxPage = 0;
+
+            var nextP = currentPage[targetKey] + direction;
+            if (nextP >= 0 && nextP <= maxPage) {
+                currentPage[targetKey] = nextP;
+                renderSingleRanking(targetKey);
+            }
         }
 
         function displayProgressStats(allScores) {
             if (allScores.length === 0) return;
-            var total = allScores.length;
+            
+            // 初回挑戦のみを分母とするためフィルタリング
+            var firstAttempts = allScores.filter(function(s) { return s.isFirstAttempt !== false; });
+            var total = firstAttempts.length;
+            if (total === 0) total = 1; // 0除算防止
+
             var counts = [0, 0, 0, 0, 0, 0];
-            allScores.forEach(function(s) {
+            firstAttempts.forEach(function(s) {
                 if (s.status === "clear") counts[5]++; else counts[s.reachedIndex]++;
             });
             var survived = [total, total, total, total, total]; 
