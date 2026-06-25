@@ -223,32 +223,65 @@
         }
         .retry-btn:hover { background-color: #eba413; }
 
+        /* シェアセクションとSNSボタン */
         .share-section {
             margin: 25px 0;
             background: #f8f9fa;
-            padding: 15px;
+            padding: 18px 15px;
             border-radius: 10px;
             border: 1px solid #dee2e6;
         }
+        .share-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
         .share-btn {
-            background-color: #28a745;
             color: white;
             font-weight: bold;
-            font-size: 16px;
-            padding: 12px 24px;
+            font-size: 15px;
+            padding: 10px 16px;
             border-radius: 30px;
             border: none;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
+            transition: transform 0.1s, opacity 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .share-btn:active {
+            transform: scale(0.98);
+        }
+        .btn-general {
+            background-color: #28a745;
             box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
-            transition: transform 0.2s, background-color 0.2s;
         }
-        .share-btn:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
+        .btn-general:hover { background-color: #218838; }
+        
+        .btn-insta {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            box-shadow: 0 4px 6px rgba(220, 39, 67, 0.2);
         }
+        .btn-insta:hover { opacity: 0.9; }
+        
+        .btn-tiktok {
+            background-color: #010101;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border: 1px solid #25f4ee;
+        }
+        .btn-tiktok:hover { opacity: 0.9; }
+
+        .btn-fail-style {
+            background-color: #6c757d !important;
+            box-shadow: 0 4px 6px rgba(108, 117, 125, 0.2) !important;
+            border: none !important;
+        }
+        .btn-fail-style:hover { background-color: #5a6268 !important; opacity: 1 !important; }
 
         .promo-banner-container {
             margin: 25px auto 10px auto;
@@ -395,7 +428,7 @@
         .admin-reset-link:hover { color: #888; }
 
         .result-title {
-            font-size: 42px;
+            font-size: 32px; /* スマホ改行防止のため全体的に安全なサイズに調整 */
             font-weight: bold;
             margin-bottom: 20px;
         }
@@ -409,6 +442,7 @@
         }
 
         .incorrect-text { 
+            font-size: 28px; /* ① タイムアップ等の文字サイズを調整 */
             color: #4b6584;
             animation: gloomEffect 2s ease-in-out infinite;
         }
@@ -443,7 +477,6 @@
             50% { transform: scale(1.1); }
         }
 
-        /* ページネーション付きランキングエリア */
         .ranking-box {
             margin-top: 20px;
             padding: 15px;
@@ -464,7 +497,6 @@
         }
         .ranking-table th { background-color: #e9ecef; color: #333; }
         
-        /* 初回挑戦の強調表示 */
         .first-attempt-badge {
             color: #dc3545;
             font-weight: bold;
@@ -473,7 +505,6 @@
             color: #555;
         }
 
-        /* ページネーションボタン用スタイル */
         .pagination-container {
             display: flex;
             justify-content: center;
@@ -616,6 +647,8 @@
                 font-size: 11px;
                 padding: 8px 2px;
             }
+            .result-title { font-size: 26px !important; }
+            .incorrect-text { font-size: 26px !important; }
         }
     </style>
 
@@ -643,7 +676,6 @@
 
     <div id="main-card" class="container">
         
-        <!-- ================= スタート画面 ================= -->
         <div id="start-screen">
             <div class="main-title-container">
                 <div class="main-title-sub">KOKUDAI SEMINAR AKABANE</div>
@@ -708,7 +740,6 @@
                 <button id="start-btn" class="start-btn" onclick="startSequence()">クイズを開始する</button>
             </div>
 
-            <!-- ② 校舎HPリンクの修正 -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
                 <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
@@ -720,7 +751,6 @@
                 </a>
             </div>
 
-            <!-- ③ ページネーション付き全データランキング（トップ画面） -->
             <div class="ranking-box">
                 <strong style="color:#007bff;">🏆 チャレンジャーランキング（全員記録）</strong>
                 <table class="ranking-table">
@@ -752,7 +782,6 @@
             <div id="countdown-text" class="ready-text">用意…</div>
         </div>
 
-        <!-- ================= クイズ画面 ================= -->
         <div id="quiz-screen" class="hidden">
             <div id="quiz-title" class="question-number">問 1</div>
             <img id="question-img" class="quiz-image" src="" alt="[画像が読み込めません]">
@@ -774,7 +803,6 @@
             <button onclick="backToQuiz()">戻る</button>
         </div>
 
-        <!-- ================= クリア画面 ================= -->
         <div id="clear-screen" class="hidden">
             <div class="result-title" style="color: #ffc107; font-size: 32px;">🎉 すばらしい！<br>100点満点だ！</div>
             <p style="font-size: 16px; margin-bottom: 10px;">おめでとうございます！見事に脱出成功です！</p>
@@ -788,13 +816,20 @@
             </div>
 
             <div class="share-section">
-                <p style="font-size: 13px; font-weight: bold; color: #555; margin-top: 0; margin-bottom: 8px;">＼ 友達に結果をシェアしよう！ ／</p>
-                <button class="share-btn" onclick="shareResult()">
-                    <span>📱 友達に結果を共有する</span>
-                </button>
+                <p style="font-size: 13px; font-weight: bold; color: #555; margin-top: 0; margin-bottom: 12px;">＼ 友達に結果をシェアしよう！ ／</p>
+                <div class="share-btn-group">
+                    <button class="share-btn btn-general" onclick="shareResult('general')">
+                        <span>📱 友達に結果を共有（LINE等）</span>
+                    </button>
+                    <button class="share-btn btn-insta" onclick="shareResult('instagram')">
+                        <span>📸 Instagram DM用にコピー</span>
+                    </button>
+                    <button class="share-btn btn-tiktok" onclick="shareResult('tiktok')">
+                        <span>🎵 TikTok DM用にコピー</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- ② 校舎HPリンクの修正 -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
                 <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
@@ -810,7 +845,6 @@
                 </a>
             </div>
             
-            <!-- ③ ページネーション付き全データランキング（クリア画面） -->
             <div class="ranking-box">
                 <strong style="color:#28a745;">🏆 チャレンジャーランキング（全員記録）</strong>
                 <table class="ranking-table">
@@ -835,7 +869,6 @@
             <div id="clear-progress-box" class="progress-summary-box"></div>
         </div>
 
-        <!-- ================= タイムアップ画面 ================= -->
         <div id="timeup-screen" class="hidden">
             <div class="result-title incorrect-text" style="color:#dc3545;">💀 タイムアップ！</div>
             <p style="font-size: 16px;">制限時間が終了しました。挑戦失敗です…</p>
@@ -859,13 +892,20 @@
             </div>
 
             <div class="share-section">
-                <p style="font-size: 13px; font-weight: bold; color: #555; margin-top: 0; margin-bottom: 8px;">＼ 悔しさを友達にシェアしよう！ ／</p>
-                <button class="share-btn" style="background-color: #6c757d; box-shadow: 0 4px 6px rgba(108, 117, 125, 0.2);" onclick="shareFailResult()">
-                    <span>📱 友達に結果を共有する</span>
-                </button>
+                <p style="font-size: 13px; font-weight: bold; color: #555; margin-top: 0; margin-bottom: 12px;">＼ 悔しさを友達にシェアしよう！ ／</p>
+                <div class="share-btn-group">
+                    <button class="share-btn btn-fail-style" onclick="shareFailResult('general')">
+                        <span>📱 友達に結果を共有（LINE等）</span>
+                    </button>
+                    <button class="share-btn btn-fail-style" onclick="shareFailResult('instagram')">
+                        <span>📸 Instagram DM用にコピー</span>
+                    </button>
+                    <button class="share-btn btn-fail-style" onclick="shareFailResult('tiktok')">
+                        <span>🎵 TikTok DM用にコピー</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- ② 校舎HPリンクの修正 -->
             <div class="hp-link-box">
                 <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
                 <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
@@ -881,7 +921,6 @@
                 </a>
             </div>
 
-            <!-- ③ ページネーション付き全データランキング（失敗画面） -->
             <div class="ranking-box">
                 <strong style="color:#007bff;">🏆 チャレンジャーランキング（全員記録）</strong>
                 <table class="ranking-table">
@@ -944,7 +983,6 @@
         var isMuted = false;
         var formattedClearTime = "00:00"; 
         
-        // ランキングのグローバル保持用変数
         var cachedClearScores = [];
         var currentPage = { start: 0, clear: 0, fail: 0 };
         const ITEMS_PER_PAGE = 5;
@@ -961,11 +999,9 @@
                     allScores.push(val);
                 });
                 
-                // ③ クリア者全員をランキング対象とし、タイム順（昇順）にソート
                 cachedClearScores = allScores.filter(function(s) { return s.status === "clear"; });
                 cachedClearScores.sort(function(a, b) { return a.clearTimeSeconds - b.clearTimeSeconds; });
                 
-                // ページ初期化
                 currentPage.start = 0;
                 currentPage.clear = 0;
                 currentPage.fail = 0;
@@ -1123,7 +1159,7 @@
             }
 
             window.currentPlayIsFirst = isFirst;
-            window.currentAttemptNumber = currentCount + 1; // 今回が何回目の挑戦かを記憶
+            window.currentAttemptNumber = currentCount + 1;
 
             document.getElementById("start-screen").classList.add("hidden");
             document.getElementById("countdown-screen").classList.remove("hidden");
@@ -1266,19 +1302,34 @@
                 reachedIndex: quizData.length,
                 status: "clear",
                 isFirstAttempt: window.currentPlayIsFirst,
-                attemptNumber: window.currentAttemptNumber // ③ 何回目の挑戦でのクリアかを保存
+                attemptNumber: window.currentAttemptNumber
             });
         }
 
-        // ① 友達に送る文面にURLを追加
-        function shareResult() {
+        // ② 成功画面SNS共有ロジック（Instagram・TikTok対応）
+        function shareResult(type) {
             var shareText = "国大セミナー赤羽校の塾長を倒してみない？私のクリアタイムは" + formattedClearTime + "だったよ！\n#国大セミナー #赤羽校 #塾長からの挑戦状\nリンクから君も挑戦だ！👇\nhttps://ksakabanekou-png.github.io/nazotoki/";
-            executeNativeShare(shareText);
+            
+            if (type === 'general') {
+                executeNativeShare(shareText);
+            } else if (type === 'instagram') {
+                copyAndLaunchApp(shareText, "instagram://", "Instagram");
+            } else if (type === 'tiktok') {
+                copyAndLaunchApp(shareText, "snssdk1128://", "TikTok");
+            }
         }
 
-        function shareFailResult() {
+        // ② 失敗画面SNS共有ロジック（Instagram・TikTok対応）
+        function shareFailResult(type) {
             var shareText = "国大セミナー赤羽校の問題、むずかしすぎる…！みんなも解けるか塾長からの挑戦状にチャレンジしてみて！\n#国大セミナー #赤羽校 #塾長からの挑戦状\n問題に挑戦する👇\nhttps://ksakabanekou-png.github.io/nazotoki/";
-            executeNativeShare(shareText);
+            
+            if (type === 'general') {
+                executeNativeShare(shareText);
+            } else if (type === 'instagram') {
+                copyAndLaunchApp(shareText, "instagram://", "Instagram");
+            } else if (type === 'tiktok') {
+                copyAndLaunchApp(shareText, "snssdk1128://", "TikTok");
+            }
         }
 
         function executeNativeShare(text) {
@@ -1291,6 +1342,17 @@
                     alert("文章を選択してコピーしてください：\n\n" + text);
                 });
             }
+        }
+
+        // クリップボードにコピーしてアプリ起動を試みる関数
+        function copyAndLaunchApp(text, appScheme, appName) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert("DM用の文章をコピーしました！\nこのあと" + appName + "が開きますので、友達とのDM画面に「貼り付け（ペースト）」して送ってください。");
+                // アプリのカスタムURLスキームを叩いて起動を試みる
+                window.location.href = appScheme;
+            }).catch(function() {
+                alert("文章の自動コピーに失敗しました。お手数ですが以下の文章をコピーして" + appName + "のDMでお使いください：\n\n" + text);
+            });
         }
 
         function showTimeUpScreen() {
@@ -1328,7 +1390,6 @@
             window.scrollTo(0, 0);
         }
 
-        // ③ ページネーション描画対応の統合レンダリング関数
         function renderAllRankings() {
             renderSingleRanking('start');
             renderSingleRanking('clear');
@@ -1347,11 +1408,9 @@
             var maxPage = Math.ceil(totalItems / ITEMS_PER_PAGE) - 1;
             if (maxPage < 0) maxPage = 0;
 
-            // ページインデックスの境界チェック
             if (currentPage[targetKey] > maxPage) currentPage[targetKey] = maxPage;
             var currPage = currentPage[targetKey];
 
-            // ボタンの状態制御
             if (prevBtn) prevBtn.disabled = (currPage === 0);
             if (nextBtn) nextBtn.disabled = (currPage === maxPage || totalItems === 0);
             if (pageInfo) pageInfo.textContent = (totalItems === 0 ? 1 : currPage + 1) + " / " + (maxPage + 1);
@@ -1360,14 +1419,12 @@
             var startIdx = currPage * ITEMS_PER_PAGE;
             var endIdx = Math.min(startIdx + ITEMS_PER_PAGE, totalItems);
 
-            // 5件分データ書き出し
             for (var i = startIdx; i < startIdx + ITEMS_PER_PAGE; i++) {
                 if (i < endIdx) {
                     var s = cachedClearScores[i];
                     var min = Math.floor(s.clearTimeSeconds / 60);
                     var sec = s.clearTimeSeconds % 60;
                     
-                    // 挑戦回数表示の出し分け（データに存在しない旧データは暫定1回目として扱う）
                     var attNum = s.attemptNumber || 1;
                     var badge = "";
                     if (attNum === 1) {
@@ -1378,14 +1435,12 @@
 
                     html += "<tr><td>" + (i + 1) + "位</td><td>" + s.campusName + "</td><td>" + s.teamName + "</td><td>" + min + "分" + sec + "秒</td><td>" + badge + "</td></tr>";
                 } else {
-                    // 5桁に満たないダミー行
                     html += "<tr><td>" + (i + 1) + "位</td><td>---</td><td>---</td><td>---</td><td>---</td></tr>";
                 }
             }
             tbody.innerHTML = html;
         }
 
-        // ③ ページ切り替え処理
         function changePage(targetKey, direction) {
             var totalItems = cachedClearScores.length;
             var maxPage = Math.ceil(totalItems / ITEMS_PER_PAGE) - 1;
@@ -1401,10 +1456,9 @@
         function displayProgressStats(allScores) {
             if (allScores.length === 0) return;
             
-            // 初回挑戦のみを分母とするためフィルタリング
             var firstAttempts = allScores.filter(function(s) { return s.isFirstAttempt !== false; });
             var total = firstAttempts.length;
-            if (total === 0) total = 1; // 0除算防止
+            if (total === 0) total = 1;
 
             var counts = [0, 0, 0, 0, 0, 0];
             firstAttempts.forEach(function(s) {
