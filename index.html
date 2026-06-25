@@ -1489,6 +1489,7 @@
             survived[4] = survived[3] - counts[3];
             var clearedCount = counts[5];
 
+            // 1. 進捗バー（統計データ）のHTML生成
             var html = "<strong>📊 全体データの統計（初回挑戦時の動向）</strong><div style='margin-top:10px;'>";
             for (var i = 0; i < quizData.length; i++) {
                 var rate = Math.round((survived[i] / total) * 100);
@@ -1497,6 +1498,38 @@
             var clearRate = Math.round((clearedCount / total) * 100);
             html += "<div class='progress-bar-container'><div class='progress-bar-label' style='color:#28a745;'><span>👑 脱出成功率（完全クリア）</span><span>" + clearRate + "%</span></div><div class='progress-bar-bg'><div class='progress-bar-fill cleared' style='width:" + clearRate + "%'></div></div></div></div>";
 
+            // 2. 【復活】今回の問題の答え・振り返りコーナーのHTML追加
+            html += "<hr style='border:0; border-top:1px dashed #ced4da; margin:20px 0;'>";
+            html += "<strong style='color:#2c3e50; display:block; margin-bottom:12px;'>🔍 今回の問題と正解の振り返り</strong>";
+            html += "<div style='display:flex; flex-direction:column; gap:15px;'>";
+
+            // 各問題の簡易解説メッセージを定義
+            var reviewExplanations = [
+                "【問1（算数・数学）】ルールをしっかり読み解く、小手調べの第1問！数字の「1」が正解でした。",
+                "【問2（算数・数学）】規則性や図に隠されたメッセージに気づけたかな？数字の「6」が正解です。",
+                "【問3（国語）】ひらめきと言葉の組み合わせがカギ！正解は「ゆめをみろ」でした。",
+                "【問4（理科）】問題のなかに隠された誘導を見落とさずに！正解は「せいと」でした。",
+                "【問5（社会）】塾長からの最大の挑戦状！これまでのすべてのヒントを繋ぐ正解は「ていきてすと」でした。"
+            ];
+
+            for (var j = 0; j < quizData.length; j++) {
+                var q = quizData[j];
+                var displayAns = Array.isArray(q.answer) ? q.answer[0] : q.answer;
+
+                html += "<div style='background:#f8f9fa; border:1px solid #e9ecef; border-radius:6px; padding:10px; display:flex; align-items:center; gap:12px;'>";
+                // ミニサムネイル画像
+                html += "  <img src='" + q.image + "' style='width:60px; height:60px; object-fit:cover; border-radius:4px; border:1px solid #ddd; background:#fff;' alt=''>";
+                // 問題情報
+                html += "  <div style='flex:1; text-align:left;'>";
+                html += "    <div style='font-size:13px; font-weight:bold; color:#333;'>" + q.title + "</div>";
+                html += "    <div style='font-size:12px; margin:2px 0;'><span style='background:#dc3545; color:#fff; padding:1px 5px; border-radius:3px; font-weight:bold; font-size:10px; margin-right:5px;'>正解</span><strong style='color:#dc3545; font-size:13px;'>" + displayAns + "</strong></div>";
+                html += "    <div style='font-size:11px; color:#666; line-height:1.4;'>" + reviewExplanations[j] + "</div>";
+                html += "  </div>";
+                html += "</div>";
+            }
+            html += "</div>";
+
+            // 各画面の表示エリアにHTMLを流し込む
             var clearProgressBox = document.getElementById("clear-progress-box");
             var failProgressBox = document.getElementById("fail-progress-box");
             if (clearProgressBox) clearProgressBox.innerHTML = html;
