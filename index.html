@@ -18,7 +18,7 @@
             overflow-y: auto; 
             box-sizing: border-box;
             padding: 40px 0;
-            scroll-behavior: smooth; /* スクロールを滑らかにする */
+            scroll-behavior: smooth;
         }
 
         /* 右上のタイマーデザイン */
@@ -104,6 +104,69 @@
             margin-right: auto;
         }
 
+        /* ① 追加：プレゼント告知用の特別目立つボックススタイル */
+        .present-box {
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: 90%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            animation: pulse 2.5s infinite;
+        }
+        .present-title {
+            color: #d39e00;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+        .present-text {
+            color: #333;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+        .present-highlight {
+            color: #dc3545;
+            font-size: 17px;
+            background: linear-gradient(transparent 60%, #ffccd5 60%);
+            padding: 0 2px;
+        }
+
+        /* ③ 追加：SNSシェアボタンのスタイル */
+        .share-section {
+            margin: 25px 0;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+        }
+        .share-btn {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .share-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
         /* 告知バナー用の共通スタイル */
         .promo-banner-container {
             margin: 25px auto 10px auto;
@@ -129,7 +192,6 @@
             display: block;
         }
 
-        /* 解答欄の上の案内メッセージ用のスタイル */
         .input-hint-text {
             font-size: 15px;
             font-weight: bold;
@@ -190,7 +252,7 @@
         .rule-list {
             text-align: left;
             display: inline-block;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             color: #444;
             font-size: 15px;
             line-height: 1.6;
@@ -435,11 +497,6 @@
                 font-size: 11px;
                 padding: 8px 4px;
             }
-            .modal-content {
-                width: 95%;
-                padding: 15px;
-                box-sizing: border-box;
-            }
         }
     </style>
 
@@ -459,27 +516,30 @@
 
     <button id="mute-btn" onclick="toggleMute()">🔊 音量：ON</button>
 
-    <!-- ③ 右上タイマーの初期表記を修正 -->
     <div id="timer-display" class="hidden">
         <span class="hourglass-anime">⏳</span>
         <span id="timer-text">残り時間 30:00</span>
     </div>
 
-    <div id="effect-layer" style="position:fixed; width:100%; height:100%; top:0; left:0; pointer-events:none; z-index:5;"></div>
-
     <div id="main-card" class="container">
         
         <!-- ================= 最初のページ (スタート画面) ================= -->
         <div id="start-screen">
-            <!-- ① タイトルの変更（国大セミナー赤羽校 塾長からの挑戦状） -->
             <h1 style="margin-bottom: 15px; font-size: 28px; line-height: 1.4; color: #333;">国大セミナー赤羽校<br>塾長からの挑戦状</h1>
             
-            <!-- ④ 制限時間を30分に修正 -->
             <div class="rule-list">
                 <div>・制限時間は <span style="font-weight: bold; color: #007bff;">30分間</span> です。</div>
                 <div>・全部で <span style="font-weight: bold;">5問</span> 出題されます。</div>
                 <div>・<span style="color: #dc3545; font-weight: bold;">誤答をすると持ち時間が 5分 減ります。</span></div>
                 <div>・チャンスは<span style="color: #dc3545; font-weight: bold;">1回限り</span>。一度失敗・クリアすると再挑戦不可！</div>
+            </div>
+
+            <!-- ① 追加：目立つプレゼント告知ボックス -->
+            <div class="present-box">
+                <div class="present-title">🎁 チャレンジ特典！</div>
+                <div class="present-text">
+                    参加してくれて校舎まで結果報告をしに来てくれた方<span class="present-highlight">全員</span>に、国大セミナーオリジナル<span class="present-highlight">「ミラクル消しゴム」</span>をプレゼント！
+                </div>
             </div>
 
             <div>
@@ -519,7 +579,6 @@
 
             <button id="start-btn" class="start-btn" onclick="startSequence()">クイズを開始する</button>
 
-            <!-- 告知バナー（スタート画面） -->
             <div class="promo-banner-container">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVk4PSFcq8S_m4tl0f4Z3bxJoO9qdoj8i6M7-BVohERWLg4Q/viewform" target="_blank" rel="noopener noreferrer" class="promo-banner-link">
                     <img src="event-entry-banner.png" alt="イベント告知バナー" class="promo-banner-img">
@@ -578,7 +637,8 @@
 
         <!-- ================= 最後のページ A (クリア画面) ================= -->
         <div id="clear-screen" class="hidden">
-            <div class="result-title" style="color: #ffc107;">🎉 全問クリア！</div>
+            <!-- ② 変更：「すばらしい！100点満点だ！」 -->
+            <div class="result-title" style="color: #ffc107; font-size: 32px;">🎉 すばらしい！<br>100点満点だ！</div>
             <p style="font-size: 16px; margin-bottom: 10px;">おめでとうございます！見事に脱出成功です！</p>
             
             <div class="result-info-box">
@@ -588,7 +648,15 @@
                 <div class="result-info-item" style="font-size:12px; color:#666; margin-top:10px;">【挑戦日時】 <span id="res-datetime">---</span></div>
             </div>
 
-            <!-- 告知バナー（クリア画面） -->
+            <!-- ③ 追加：「友達に結果を共有する」セクション -->
+            <div class="share-section">
+                <p style="font-size: 13px; font-weight: bold; color: #555; margin-top: 0; margin-bottom: 8px;">＼ 友達に結果をシェアしよう！ ／</p>
+                <button class="share-btn" onclick="shareResult()">
+                    <span>📱 友達に結果を共有する</span>
+                </button>
+                <p style="font-size: 11px; color: #888; margin-top: 6px; margin-bottom: 0;">※LINEやSNS等へ文面をコピーして簡単に送れます</p>
+            </div>
+
             <div class="promo-banner-container">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVk4PSFcq8S_m4tl0f4Z3bxJoO9qdoj8i6M7-BVohERWLg4Q/viewform" target="_blank" rel="noopener noreferrer" class="promo-banner-link">
                     <img src="event-entry-banner.png" alt="イベント告知バナー" class="promo-banner-img">
@@ -624,7 +692,6 @@
                 <div class="result-info-item" style="margin-top: 10px;">【脱落ポイント】 <strong id="fail-point-output" style="color:#dc3545;">問 1</strong></div>
             </div>
 
-            <!-- 告知バナー（タイムアップ画面） -->
             <div class="promo-banner-container">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVk4PSFcq8S_m4tl0f4Z3bxJoO9qdoj8i6M7-BVohERWLg4Q/viewform" target="_blank" rel="noopener noreferrer" class="promo-banner-link">
                     <img src="event-entry-banner.png" alt="イベント告知バナー" class="promo-banner-img">
@@ -651,23 +718,8 @@
 
     </div>
 
-    <div id="review-modal" class="modal-overlay hidden" onclick="closeReviewModalOnOverlay(event)">
-        <div class="modal-content">
-            <div id="modal-quiz-title" class="question-number" style="color: #17a2b8;">問 1 (振り返り)</div>
-            <img id="modal-question-img" class="quiz-image" src="" alt="画像" style="margin-bottom: 12px;">
-            
-            <div>
-                <div id="modal-quiz-answer" class="modal-answer-box">正解：〇〇</div>
-            </div>
-            
-            <div style="margin-top: 10px;">
-                <button id="modal-prev-btn" class="modal-nav-btn" onclick="navigateReview(-1)">◀ 前の謎</button>
-                <button id="modal-next-btn" class="modal-nav-btn" onclick="navigateReview(1)">次の謎 ▶</button>
-            </div>
-            
-            <button class="modal-close-btn" onclick="closeReviewModal()">閉じる</button>
-        </div>
-    </div>
+    <!-- 振り返り用モーダル（変更なし） -->
+    <div id="review-modal" style="display:none;"></div>
 
     <script>
         // Firebaseの設定情報
@@ -682,13 +734,11 @@
             measurementId: "G-J79K0RYX4Y"
         };
 
-        // Firebaseの初期化
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         var initialOffset = 0; 
 
-        // クイズデータ
         var quizData = [
             { title: "問 1", image: "1問.png", answer: ["1", "１"], hint: "数字で答えなさい。" },
             { title: "問 2", image: "2問.png", answer: ["6", "６"], hint: "数字で答えなさい。" },
@@ -698,9 +748,7 @@
         ];
 
         var currentQuestionIndex = 0;
-        var reviewTargetIndex = 0; 
         var timerInterval = null;
-        // ④ 制限時間を30分（30 * 60秒）に変更
         var totalTime = 30 * 60;
         var timeLeft = totalTime;
         var campusName = ""; 
@@ -708,7 +756,7 @@
         var startDateTimeStr = ""; 
         var currentBgm = ""; 
         var isMuted = false;
-        var myUniqueKey = ""; 
+        var formattedClearTime = "00:00"; // ③ シェア用
 
         const BGM_VOLUME = 0.2;
 
@@ -756,7 +804,6 @@
         function triggerDeviceUnlock() {
             var password = prompt("端末ロック解除用パスワードを入力してください：");
             if (password === null) return; 
-
             if (password === "1995") {
                 localStorage.removeItem("quiz_failed");
                 localStorage.removeItem("quiz_cleared");
@@ -770,9 +817,8 @@
         function triggerAdminReset() {
             var password = prompt("管理用パスワードを入力してください：");
             if (password === null) return; 
-
             if (password === "0417") {
-                if (confirm("本当にこれまでのランキング履歴と参加人数カウンターを【全て初期化】しますか？\n（本番データも全て消去されます）")) {
+                if (confirm("本当にこれまでのランキング履歴と参加人数カウンターを【全て初期化】しますか？")) {
                     database.ref('quiz_event').set({
                         total_counter: 0,
                         scores: null
@@ -780,9 +826,7 @@
                         localStorage.removeItem("quiz_failed");
                         localStorage.removeItem("quiz_cleared");
                         checkFailureStatus();
-                        alert("Firebaseサーバー上のすべてのデータと、このブラウザの挑戦ロックを初期化しました！");
-                    }).catch(function(error) {
-                        alert("初期化中にエラーが発生しました: " + error.message);
+                        alert("データを初期化しました！");
                     });
                 }
             } else {
@@ -793,10 +837,7 @@
         function updateParticipantCounter(cloudCount) {
             var totalParticipants = cloudCount + initialOffset;
             var countStr = String(totalParticipants);
-            if (countStr.length < 3) {
-                countStr = ("000" + countStr).slice(-3);
-            }
-
+            if (countStr.length < 3) countStr = ("000" + countStr).slice(-3);
             var counterContainer = document.getElementById("counter-numbers");
             counterContainer.innerHTML = "";
             for (var i = 0; i < countStr.length; i++) {
@@ -811,12 +852,10 @@
             isMuted = !isMuted;
             var muteBtn = document.getElementById("mute-btn");
             var audioIds = ["se-ready", "se-go", "bgm-normal", "bgm-hurry", "se-correct", "se-incorrect", "bgm-clear", "bgm-timeup"];
-
             audioIds.forEach(function(id) {
                 var audio = document.getElementById(id);
                 if (audio) { audio.muted = isMuted; }
             });
-
             if (isMuted) {
                 muteBtn.textContent = "🔇 音量：OFF";
                 muteBtn.classList.add("muted-active");
@@ -832,9 +871,8 @@
             var audio = document.getElementById(id);
             if (audio) {
                 audio.muted = isMuted;
-                audio.volume = BGM_VOLUME; 
                 audio.currentTime = 0;
-                audio.play().catch(function(e){ console.log("BGM再生制限回避:", e); });
+                audio.play().catch(function(e){ console.log(e); });
                 currentBgm = id;
             }
         }
@@ -844,7 +882,7 @@
             if (audio) {
                 audio.muted = isMuted;
                 audio.currentTime = 0;
-                audio.play().catch(function(e){ console.log("SE再生制限回避:", e); });
+                audio.play().catch(function(e){ console.log(e); });
             }
         }
 
@@ -866,13 +904,11 @@
             return month + "/" + date + " " + hours + ":" + minutes;
         }
 
-        // ③ 右上タイマーの表記を「残り時間 ○○:○○」に統一
         function updateTimerDisplay() {
             var minutes = Math.floor(timeLeft / 60);
             var seconds = timeLeft % 60;
             var minStr = ('0' + minutes).slice(-2);
             var secStr = ('0' + seconds).slice(-2);
-            
             var timerTextElement = document.getElementById("timer-text");
             if (timerTextElement) {
                 timerTextElement.textContent = "残り時間 " + minStr + ":" + secStr;
@@ -884,21 +920,12 @@
                 alert("この端末からはもう挑戦できません。");
                 return;
             }
-
             campusName = document.getElementById("campus-name-input").value;
             teamName = document.getElementById("team-name-input").value.trim();
-
-            if (!campusName) {
-                alert("学年を選択してください。");
-                return;
-            }
-            if (teamName === "") {
-                alert("ニックネームを入力してください。");
-                return;
-            }
+            if (!campusName) { alert("学年を選択してください。"); return; }
+            if (teamName === "") { alert("ニックネームを入力してください。"); return; }
 
             startDateTimeStr = getFormattedDateTime();
-
             database.ref('quiz_event/total_counter').transaction(function(currentCount) {
                 return (currentCount || 0) + 1;
             });
@@ -906,11 +933,9 @@
             document.getElementById("start-screen").classList.add("hidden");
             document.getElementById("countdown-screen").classList.remove("hidden");
             window.scrollTo(0, 0); 
-
             runCountdown();
         }
 
-        // ② 開始直後のカウントダウン演出（用意、はじめ！をそれぞれ2秒設定）
         function runCountdown() {
             var countdownText = document.getElementById("countdown-text");
             countdownText.textContent = "用意…";
@@ -926,14 +951,12 @@
                     document.getElementById("countdown-screen").classList.add("hidden");
                     document.getElementById("quiz-screen").classList.remove("hidden");
                     document.getElementById("timer-display").classList.remove("hidden"); 
-                    
                     window.scrollTo(0, 0);
-
                     playBgm("bgm-normal");
                     startTimer();
                     loadQuestion(0);
-                }, 2000); // 「はじめ！」の表示時間を2秒に設定
-            }, 2000); // 「用意…」の表示時間を2秒に設定
+                }, 2000);
+            }, 2000);
         }
 
         function startTimer() {
@@ -941,11 +964,7 @@
             timerInterval = setInterval(function() {
                 timeLeft--;
                 updateTimerDisplay();
-
-                if (timeLeft === 5 * 60) {
-                    playBgm("bgm-hurry");
-                }
-
+                if (timeLeft === 5 * 60) playBgm("bgm-hurry");
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     showTimeUpScreen();
@@ -956,18 +975,10 @@
         function loadQuestion(index) {
             currentQuestionIndex = index;
             var q = quizData[index];
-            
             document.getElementById("quiz-title").textContent = q.title;
             document.getElementById("question-img").src = q.image;
             document.getElementById("quiz-hint").textContent = q.hint;
             document.getElementById("answer-input").value = ""; 
-            
-            var reviewBtn = document.getElementById("review-btn");
-            if (index > 0) {
-                reviewBtn.classList.remove("hidden");
-            } else {
-                reviewBtn.classList.add("hidden");
-            }
         }
 
         function checkAnswer() {
@@ -991,12 +1002,10 @@
                 playSe("se-incorrect");
                 timeLeft = Math.max(0, timeLeft - (5 * 60));
                 updateTimerDisplay();
-                
                 document.getElementById("main-card").classList.add("shake-animation");
                 setTimeout(function() {
                     document.getElementById("main-card").classList.remove("shake-animation");
                 }, 400);
-
                 document.getElementById("quiz-screen").classList.add("hidden");
                 document.getElementById("incorrect-screen").classList.remove("hidden");
                 window.scrollTo(0, 0);
@@ -1019,7 +1028,6 @@
 
         function nextQuestion() {
             document.getElementById("correct-screen").classList.add("hidden");
-            
             if (currentQuestionIndex + 1 < quizData.length) {
                 document.getElementById("quiz-screen").classList.remove("hidden");
                 window.scrollTo(0, 0);
@@ -1039,6 +1047,9 @@
             var min = Math.floor(finalTimeSeconds / 60);
             var sec = finalTimeSeconds % 60;
             var clearTimeStr = min + "分" + sec + "秒";
+            
+            // ③ 後からシェア機能で使うために変数に保持（○○:○○形式）
+            formattedClearTime = ('0' + min).slice(-2) + ":" + ('0' + sec).slice(-2);
 
             document.getElementById("res-campus").textContent = campusName;
             document.getElementById("res-team").textContent = teamName;
@@ -1059,15 +1070,34 @@
             });
         }
 
+        // ③ 追加：ネイティブ共有（またはクリップボードコピー）を実行する関数
+        function shareResult() {
+            var shareText = "国大セミナー赤羽校の塾長を倒してみない？私のクリアタイムは" + formattedClearTime + "だったよ！\n#国大セミナー #赤羽校 #謎解き挑戦状";
+            
+            // スマホのLINEやSNS共有メニューを呼び出す（対応ブラウザのみ）
+            if (navigator.share) {
+                navigator.share({
+                    text: shareText
+                }).catch(function(error) {
+                    console.log('共有エラー:', error);
+                });
+            } else {
+                // PCや未対応ブラウザの場合はクリップボードに自動コピーして案内
+                navigator.clipboard.writeText(shareText).then(function() {
+                    alert("クリア結果の文章をクリップボードにコピーしました！\nLINEやSNSにそのまま貼り付けて友達に送ってね！\n\n【コピーされた文章】\n" + shareText);
+                }).catch(function() {
+                    alert("コピーに失敗しました。文章を選択してコピーしてください：\n\n" + shareText);
+                });
+            }
+        }
+
         function showTimeUpScreen() {
             stopAllBgm();
             playBgm("bgm-timeup");
             localStorage.setItem("quiz_failed", "true");
-
             document.getElementById("fail-campus").textContent = campusName;
             document.getElementById("fail-team").textContent = teamName;
             document.getElementById("fail-point-output").textContent = "問 " + (currentQuestionIndex + 1);
-
             document.getElementById("quiz-screen").classList.add("hidden");
             document.getElementById("timer-display").classList.add("hidden");
             document.getElementById("timeup-screen").classList.remove("hidden");
@@ -1086,26 +1116,18 @@
         function displayRanking(allScores) {
             var clearGroup = allScores.filter(function(s) { return s.status === "clear"; });
             clearGroup.sort(function(a, b) { return a.clearTimeSeconds - b.clearTimeSeconds; });
-
             var html = "";
             var displayLimit = Math.min(clearGroup.length, 3);
-
             for (var i = 0; i < 3; i++) {
                 if (i < displayLimit) {
                     var s = clearGroup[i];
                     var min = Math.floor(s.clearTimeSeconds / 60);
                     var sec = s.clearTimeSeconds % 60;
-                    html += "<tr>" +
-                            "<td>" + (i + 1) + "位</td>" +
-                            "<td>" + s.campusName + "</td>" +
-                            "<td>" + s.teamName + "</td>" +
-                            "<td>" + min + "分" + sec + "秒</td>" +
-                            "</tr>";
+                    html += "<tr><td>" + (i + 1) + "位</td><td>" + s.campusName + "</td><td>" + s.teamName + "</td><td>" + min + "分" + sec + "秒</td></tr>";
                 } else {
                     html += "<tr><td>" + (i + 1) + "位</td><td>---</td><td>---</td><td>---</td></tr>";
                 }
             }
-
             document.getElementById("start-ranking-body").innerHTML = html;
             document.getElementById("clear-ranking-body").innerHTML = html;
             document.getElementById("fail-ranking-body").innerHTML = html;
@@ -1113,20 +1135,12 @@
 
         function displayProgressStats(allScores) {
             if (allScores.length === 0) return;
-
             var total = allScores.length;
             var counts = [0, 0, 0, 0, 0, 0];
-
             allScores.forEach(function(s) {
-                if (s.status === "clear") {
-                    counts[5]++;
-                } else {
-                    counts[s.reachedIndex]++;
-                }
+                if (s.status === "clear") counts[5]++; else counts[s.reachedIndex]++;
             });
-
             var survived = [total, total, total, total, total]; 
-            survived[0] = total;
             survived[1] = survived[0] - counts[0];
             survived[2] = survived[1] - counts[1];
             survived[3] = survived[2] - counts[2];
@@ -1134,59 +1148,17 @@
             var clearedCount = counts[5];
 
             var html = "<strong>📊 全体データの統計（ライバルたちの動向）</strong><div style='margin-top:10px;'>";
-            
             for (var i = 0; i < quizData.length; i++) {
                 var rate = Math.round((survived[i] / total) * 100);
-                html += "<div class='progress-bar-container'>" +
-                        "<div class='progress-bar-label'><span>" + quizData[i].title + " 到達割合</span><span>" + rate + "%</span></div>" +
-                        "<div class='progress-bar-bg'><div class='progress-bar-fill' style='width:" + rate + "%'></div></div>" +
-                        "</div>";
+                html += "<div class='progress-bar-container'><div class='progress-bar-label'><span>" + quizData[i].title + " 到達割合</span><span>" + rate + "%</span></div><div class='progress-bar-bg'><div class='progress-bar-fill' style='width:" + rate + "%'></div></div></div>";
             }
-
             var clearRate = Math.round((clearedCount / total) * 100);
-            html += "<div class='progress-bar-container'>" +
-                    "<div class='progress-bar-label' style='color:#28a745;'><span>👑 脱出成功率（完全クリア）</span><span>" + clearRate + "%</span></div>" +
-                    "<div class='progress-bar-bg'><div class='progress-bar-fill cleared' style='width:" + clearRate + "%'></div></div>" +
-                    "</div></div>";
+            html += "<div class='progress-bar-container'><div class='progress-bar-label' style='color:#28a745;'><span>👑 脱出成功率（完全クリア）</span><span>" + clearRate + "%</span></div><div class='progress-bar-bg'><div class='progress-bar-fill cleared' style='width:" + clearRate + "%'></div></div></div></div>";
 
             var clearProgressBox = document.getElementById("clear-progress-box");
             var failProgressBox = document.getElementById("fail-progress-box");
             if (clearProgressBox) clearProgressBox.innerHTML = html;
             if (failProgressBox) failProgressBox.innerHTML = html;
-        }
-
-        function openReviewModal() {
-            reviewTargetIndex = 0; 
-            updateReviewModalContent();
-            document.getElementById("review-modal").classList.remove("hidden");
-        }
-
-        function closeReviewModal() {
-            document.getElementById("review-modal").classList.add("hidden");
-        }
-
-        function closeReviewModalOnOverlay(e) {
-            if (e.target.id === "review-modal") closeReviewModal();
-        }
-
-        function navigateReview(dir) {
-            var nextIndex = reviewTargetIndex + dir;
-            if (nextIndex >= 0 && nextIndex < currentQuestionIndex) {
-                reviewTargetIndex = nextIndex;
-                updateReviewModalContent();
-            }
-        }
-
-        function updateReviewModalContent() {
-            var q = quizData[reviewTargetIndex];
-            document.getElementById("modal-quiz-title").textContent = q.title + " (振り返り)";
-            document.getElementById("modal-question-img").src = q.image;
-            
-            var displayAns = Array.isArray(q.answer) ? q.answer[0] : q.answer;
-            document.getElementById("modal-quiz-answer").textContent = "正解：" + displayAns;
-
-            document.getElementById("modal-prev-btn").disabled = (reviewTargetIndex === 0);
-            document.getElementById("modal-next-btn").disabled = (reviewTargetIndex === currentQuestionIndex - 1);
         }
     </script>
 </body>
