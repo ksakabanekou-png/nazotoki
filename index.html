@@ -487,6 +487,7 @@
             border-radius: 8px;
             border: 1px solid #dee2e6;
             text-align: center;
+            position: relative;
         }
         .ranking-table {
             width: 100%;
@@ -780,7 +781,6 @@
             </div>
 
             <div class="admin-links-container">
-                <span class="admin-reset-link" onclick="triggerDeviceUnlock()">⚙️ ローカルデータクリア</span>
                 <span class="admin-reset-link" onclick="triggerAdminReset()">⚠️ system reset</span>
             </div>
         </div>
@@ -1027,17 +1027,10 @@
             });
         }
 
-        function triggerDeviceUnlock() {
-            localStorage.removeItem("quiz_has_attempted");
-            localStorage.removeItem("quiz_attempt_count");
-            alert("この端末のローカル挑戦履歴（カウント数など）をクリアしました。");
-            location.reload();
-        }
-
         function triggerAdminReset() {
             var password = prompt("管理用パスワードを入力してください：");
             if (password === null) return; 
-            if (password === "0417") {
+            if (password === "1995") { // パスワードを1995に変更
                 if (confirm("本当にこれまでの全てのランキング履歴と参加人数カウンターを【全て初期化】しますか？")) {
                     database.ref('quiz_event').set({
                         total_counter: 0,
@@ -1116,7 +1109,7 @@
             currentBgm = "";
         }
 
-        function getFormattedDateTime() {
+        getFormattedDateTime = function() {
             var now = new Date();
             var month = ('0' + (now.getMonth() + 1)).slice(-2);
             var date = ('0' + now.getDate()).slice(-2);
@@ -1391,7 +1384,7 @@
             renderSingleRanking('fail');
         }
 
-       function renderSingleRanking(targetKey) {
+        function renderSingleRanking(targetKey) {
             var tbody = document.getElementById(targetKey + "-ranking-body");
             var prevBtn = document.getElementById(targetKey + "-prev-btn");
             var nextBtn = document.getElementById(targetKey + "-next-btn");
@@ -1401,21 +1394,16 @@
 
             var totalItems = cachedClearScores.length;
 
-            // 【追加】クリア件数が10件未満の場合は「集計中」のメッセージを出す
             if (totalItems < 10) {
-                // テーブルの親要素（ranking-box）ごと操作するために、tbodyの先祖を探して表示を切り替えます
                 var tableElement = tbody.closest(".ranking-box").querySelector(".ranking-table");
                 var paginationElement = tbody.closest(".ranking-box").querySelector(".pagination-container");
                 
-                // 既存の集計中メッセージがあれば削除
                 var oldMsg = tbody.closest(".ranking-box").querySelector(".gathering-msg");
                 if (oldMsg) oldMsg.remove();
 
-                // テーブルとページネーションを隠す
                 if (tableElement) tableElement.style.display = "none";
                 if (paginationElement) paginationElement.style.display = "none";
 
-                // 「集計中」のメッセージを作成して挿入
                 var msgDiv = document.createElement("div");
                 msgDiv.className = "gathering-msg";
                 msgDiv.style.padding = "20px 0";
@@ -1425,10 +1413,9 @@
                 msgDiv.innerHTML = "📊 現在ランキングデータ集計中…<br><span style='font-size:12px; color:#95a5a6; font-weight:normal;'>（10組以上がクリアするとランキングが解放されます！）</span>";
                 
                 tbody.closest(".ranking-box").appendChild(msgDiv);
-                return; // ここで処理を終了
+                return; 
             }
 
-            // 10件以上ある場合は、通常のランキング表示処理（隠していた要素を元に戻す）
             var tableElement = tbody.closest(".ranking-box").querySelector(".ranking-table");
             var paginationElement = tbody.closest(".ranking-box").querySelector(".pagination-container");
             if (tableElement) tableElement.style.display = "table";
@@ -1436,8 +1423,6 @@
             var oldMsg = tbody.closest(".ranking-box").querySelector(".gathering-msg");
             if (oldMsg) oldMsg.remove();
 
-
-            // ---- 以下は元のランキング生成ロジック ----
             var maxPage = Math.ceil(totalItems / ITEMS_PER_PAGE) - 1;
             if (maxPage < 0) maxPage = 0;
 
@@ -1473,6 +1458,7 @@
             }
             tbody.innerHTML = html;
         }
+
         function changePage(targetKey, direction) {
             var totalItems = cachedClearScores.length;
             var maxPage = Math.ceil(totalItems / ITEMS_PER_PAGE) - 1;
