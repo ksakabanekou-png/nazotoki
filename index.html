@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>国大セミナー赤羽校　謎解き</title>
+    <title>リアルタイム合同画像クイズゲーム</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
@@ -370,58 +370,6 @@
         }
         .progress-bar-fill.cleared { background: linear-gradient(90deg, #56d77e, #28a745); }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 480px;
-            text-align: center;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
-            position: relative;
-        }
-        .modal-answer-box {
-            background-color: #eef9f6;
-            border: 1px solid #ccebe2;
-            color: #155724;
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            display: inline-block;
-        }
-        .modal-close-btn {
-            background-color: #6c757d;
-            padding: 8px 20px;
-            font-size: 14px;
-            margin-top: 15px;
-        }
-        .modal-close-btn:hover { background-color: #5a6268; }
-        .modal-nav-btn {
-            background-color: #f8f9fa;
-            color: #333;
-            border: 1px solid #ccc;
-            padding: 6px 15px;
-            font-size: 14px;
-            border-radius: 4px;
-            margin: 0 5px;
-        }
-        .modal-nav-btn:hover:not(:disabled) { background-color: #e2e6ea; }
-        .modal-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
         @media screen and (max-width: 768px) {
             body {
                 padding: 10px;
@@ -511,20 +459,24 @@
 
     <button id="mute-btn" onclick="toggleMute()">🔊 音量：ON</button>
 
+    <!-- ③ 右上タイマーの初期表記を修正 -->
     <div id="timer-display" class="hidden">
         <span class="hourglass-anime">⏳</span>
-        <span id="timer-text">残り時間 45:00</span>
+        <span id="timer-text">残り時間 30:00</span>
     </div>
 
     <div id="effect-layer" style="position:fixed; width:100%; height:100%; top:0; left:0; pointer-events:none; z-index:5;"></div>
 
     <div id="main-card" class="container">
         
+        <!-- ================= 最初のページ (スタート画面) ================= -->
         <div id="start-screen">
-            <h1 style="margin-bottom: 15px;">クイズに挑戦！</h1>
+            <!-- ① タイトルの変更（国大セミナー赤羽校 塾長からの挑戦状） -->
+            <h1 style="margin-bottom: 15px; font-size: 28px; line-height: 1.4; color: #333;">国大セミナー赤羽校<br>塾長からの挑戦状</h1>
             
+            <!-- ④ 制限時間を30分に修正 -->
             <div class="rule-list">
-                <div>・制限時間は <span style="font-weight: bold; color: #007bff;">45分間</span> です。</div>
+                <div>・制限時間は <span style="font-weight: bold; color: #007bff;">30分間</span> です。</div>
                 <div>・全部で <span style="font-weight: bold;">5問</span> 出題されます。</div>
                 <div>・<span style="color: #dc3545; font-weight: bold;">誤答をすると持ち時間が 5分 減ります。</span></div>
                 <div>・チャンスは<span style="color: #dc3545; font-weight: bold;">1回限り</span>。一度失敗・クリアすると再挑戦不可！</div>
@@ -567,6 +519,7 @@
 
             <button id="start-btn" class="start-btn" onclick="startSequence()">クイズを開始する</button>
 
+            <!-- 告知バナー（スタート画面） -->
             <div class="promo-banner-container">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVk4PSFcq8S_m4tl0f4Z3bxJoO9qdoj8i6M7-BVohERWLg4Q/viewform" target="_blank" rel="noopener noreferrer" class="promo-banner-link">
                     <img src="event-entry-banner.png" alt="イベント告知バナー" class="promo-banner-img">
@@ -623,9 +576,10 @@
             <button onclick="backToQuiz()">戻る</button>
         </div>
 
+        <!-- ================= 最後のページ A (クリア画面) ================= -->
         <div id="clear-screen" class="hidden">
             <div class="result-title" style="color: #ffc107;">🎉 全問クリア！</div>
-            <p style="font-size: 16px; margin-bottom: 10px;">おめでとう！見事クリア！</p>
+            <p style="font-size: 16px; margin-bottom: 10px;">おめでとうございます！見事に脱出成功です！</p>
             
             <div class="result-info-box">
                 <div class="result-info-item">【学年】 <span id="res-campus" style="font-weight:bold;">---</span></div>
@@ -634,8 +588,7 @@
                 <div class="result-info-item" style="font-size:12px; color:#666; margin-top:10px;">【挑戦日時】 <span id="res-datetime">---</span></div>
             </div>
 
- <p style="font-size: 24px; margin-bottom: 10px;">《大好評！》理科実験教室　開催します！【参加無料】</p>
-            
+            <!-- 告知バナー（クリア画面） -->
             <div class="promo-banner-container">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVk4PSFcq8S_m4tl0f4Z3bxJoO9qdoj8i6M7-BVohERWLg4Q/viewform" target="_blank" rel="noopener noreferrer" class="promo-banner-link">
                     <img src="event-entry-banner.png" alt="イベント告知バナー" class="promo-banner-img">
@@ -660,6 +613,7 @@
             <div id="clear-progress-box" class="progress-summary-box"></div>
         </div>
 
+        <!-- ================= 最後のページ B (タイムアップ画面) ================= -->
         <div id="timeup-screen" class="hidden">
             <div class="result-title incorrect-text" style="color:#dc3545;">💀 タイムアップ！</div>
             <p style="font-size: 16px;">制限時間が終了しました。脱出失敗です…</p>
@@ -670,6 +624,7 @@
                 <div class="result-info-item" style="margin-top: 10px;">【脱落ポイント】 <strong id="fail-point-output" style="color:#dc3545;">問 1</strong></div>
             </div>
 
+            <!-- 告知バナー（タイムアップ画面） -->
             <div class="promo-banner-container">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVk4PSFcq8S_m4tl0f4Z3bxJoO9qdoj8i6M7-BVohERWLg4Q/viewform" target="_blank" rel="noopener noreferrer" class="promo-banner-link">
                     <img src="event-entry-banner.png" alt="イベント告知バナー" class="promo-banner-img">
@@ -745,7 +700,8 @@
         var currentQuestionIndex = 0;
         var reviewTargetIndex = 0; 
         var timerInterval = null;
-        var totalTime = 45 * 60;
+        // ④ 制限時間を30分（30 * 60秒）に変更
+        var totalTime = 30 * 60;
         var timeLeft = totalTime;
         var campusName = ""; 
         var teamName = "";   
@@ -910,6 +866,7 @@
             return month + "/" + date + " " + hours + ":" + minutes;
         }
 
+        // ③ 右上タイマーの表記を「残り時間 ○○:○○」に統一
         function updateTimerDisplay() {
             var minutes = Math.floor(timeLeft / 60);
             var seconds = timeLeft % 60;
@@ -918,11 +875,7 @@
             
             var timerTextElement = document.getElementById("timer-text");
             if (timerTextElement) {
-                if (window.innerWidth <= 768) {
-                    timerTextElement.textContent = minStr + ":" + secStr;
-                } else {
-                    timerTextElement.textContent = "Remaining: " + minStr + " : " + secStr;
-                }
+                timerTextElement.textContent = "残り時間 " + minStr + ":" + secStr;
             }
         }
 
@@ -957,6 +910,7 @@
             runCountdown();
         }
 
+        // ② 開始直後のカウントダウン演出（用意、はじめ！をそれぞれ2秒設定）
         function runCountdown() {
             var countdownText = document.getElementById("countdown-text");
             countdownText.textContent = "用意…";
@@ -964,7 +918,7 @@
             playSe("se-ready");
 
             setTimeout(function() {
-                countdownText.textContent = "スタート！";
+                countdownText.textContent = "はじめ！";
                 countdownText.className = "go-text";
                 playSe("se-go");
 
@@ -978,8 +932,8 @@
                     playBgm("bgm-normal");
                     startTimer();
                     loadQuestion(0);
-                }, 1000);
-            }, 1000);
+                }, 2000); // 「はじめ！」の表示時間を2秒に設定
+            }, 2000); // 「用意…」の表示時間を2秒に設定
         }
 
         function startTimer() {
