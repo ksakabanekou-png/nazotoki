@@ -1391,7 +1391,7 @@
             renderSingleRanking('fail');
         }
 
-        function renderSingleRanking(targetKey) {
+       function renderSingleRanking(targetKey) {
             var tbody = document.getElementById(targetKey + "-ranking-body");
             var prevBtn = document.getElementById(targetKey + "-prev-btn");
             var nextBtn = document.getElementById(targetKey + "-next-btn");
@@ -1400,6 +1400,44 @@
             if (!tbody) return;
 
             var totalItems = cachedClearScores.length;
+
+            // 【追加】クリア件数が10件未満の場合は「集計中」のメッセージを出す
+            if (totalItems < 10) {
+                // テーブルの親要素（ranking-box）ごと操作するために、tbodyの先祖を探して表示を切り替えます
+                var tableElement = tbody.closest(".ranking-box").querySelector(".ranking-table");
+                var paginationElement = tbody.closest(".ranking-box").querySelector(".pagination-container");
+                
+                // 既存の集計中メッセージがあれば削除
+                var oldMsg = tbody.closest(".ranking-box").querySelector(".gathering-msg");
+                if (oldMsg) oldMsg.remove();
+
+                // テーブルとページネーションを隠す
+                if (tableElement) tableElement.style.display = "none";
+                if (paginationElement) paginationElement.style.display = "none";
+
+                // 「集計中」のメッセージを作成して挿入
+                var msgDiv = document.createElement("div");
+                msgDiv.className = "gathering-msg";
+                msgDiv.style.padding = "20px 0";
+                msgDiv.style.color = "#7f8c8d";
+                msgDiv.style.fontSize = "14px";
+                msgDiv.style.fontWeight = "bold";
+                msgDiv.innerHTML = "📊 現在ランキングデータ集計中…<br><span style='font-size:12px; color:#95a5a6; font-weight:normal;'>（10組以上がクリアするとランキングが解放されます！）</span>";
+                
+                tbody.closest(".ranking-box").appendChild(msgDiv);
+                return; // ここで処理を終了
+            }
+
+            // 10件以上ある場合は、通常のランキング表示処理（隠していた要素を元に戻す）
+            var tableElement = tbody.closest(".ranking-box").querySelector(".ranking-table");
+            var paginationElement = tbody.closest(".ranking-box").querySelector(".pagination-container");
+            if (tableElement) tableElement.style.display = "table";
+            if (paginationElement) paginationElement.style.display = "flex";
+            var oldMsg = tbody.closest(".ranking-box").querySelector(".gathering-msg");
+            if (oldMsg) oldMsg.remove();
+
+
+            // ---- 以下は元のランキング生成ロジック ----
             var maxPage = Math.ceil(totalItems / ITEMS_PER_PAGE) - 1;
             if (maxPage < 0) maxPage = 0;
 
@@ -1435,7 +1473,6 @@
             }
             tbody.innerHTML = html;
         }
-
         function changePage(targetKey, direction) {
             var totalItems = cachedClearScores.length;
             var maxPage = Math.ceil(totalItems / ITEMS_PER_PAGE) - 1;
