@@ -174,7 +174,7 @@
         .hp-link-box {
             background: #f5f6fa;
             border: 1px solid #dcdde1;
-            padding: 12px;
+            padding: 15px 12px;
             border-radius: 8px;
             margin: 15px auto;
             width: 90%;
@@ -183,11 +183,12 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 10px;
         }
         .hp-link-title {
             font-size: 12px;
             color: #666;
-            margin-bottom: 8px;
+            margin-bottom: 2px;
             font-weight: bold;
             text-align: center;
         }
@@ -203,9 +204,18 @@
             box-shadow: 0 2px 5px rgba(0,168,255,0.3);
             transition: background-color 0.2s;
             text-align: center;
+            width: 80%;
+            box-sizing: border-box;
         }
         .hp-link-btn:hover {
             background-color: #0097e6;
+        }
+        .hp-search-btn {
+            background-color: #2f3640;
+            box-shadow: 0 2px 5px rgba(47,54,64,0.3);
+        }
+        .hp-search-btn:hover {
+            background-color: #1e2229;
         }
 
         .retry-btn {
@@ -268,13 +278,6 @@
             box-shadow: 0 4px 6px rgba(220, 39, 67, 0.2);
         }
         .btn-insta:hover { opacity: 0.9; }
-        
-        .btn-tiktok {
-            background-color: #010101;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            border: 1px solid #25f4ee;
-        }
-        .btn-tiktok:hover { opacity: 0.9; }
 
         .btn-fail-style {
             background-color: #6c757d !important;
@@ -428,7 +431,7 @@
         .admin-reset-link:hover { color: #888; }
 
         .result-title {
-            font-size: 32px; /* スマホ改行防止のため全体的に安全なサイズに調整 */
+            font-size: 32px; 
             font-weight: bold;
             margin-bottom: 20px;
         }
@@ -442,7 +445,7 @@
         }
 
         .incorrect-text { 
-            font-size: 28px; /* ① タイムアップ等の文字サイズを調整 */
+            font-size: 28px; 
             color: #4b6584;
             animation: gloomEffect 2s ease-in-out infinite;
         }
@@ -626,6 +629,9 @@
                 margin-top: 10px;
                 margin-bottom: 20px;
             }
+            .hp-link-btn {
+                width: 100% !important;
+            }
             .input-style {
                 width: 100% !important;
                 font-size: 16px !important;
@@ -741,7 +747,8 @@
             </div>
 
             <div class="hp-link-box">
-                <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
+                <div class="hp-link-title">📢 国大セミナーの最新情報はこちら！</div>
+                <a href="https://www.kokudai.com/school?sch_pref=tokyo" target="_blank" rel="noopener noreferrer" class="hp-link-btn hp-search-btn">🔍 近くの国大セミナーの校舎を探す</a>
                 <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
             </div>
 
@@ -824,14 +831,12 @@
                     <button class="share-btn btn-insta" onclick="shareResult('instagram')">
                         <span>📸 Instagram DM用にコピー</span>
                     </button>
-                    <button class="share-btn btn-tiktok" onclick="shareResult('tiktok')">
-                        <span>🎵 TikTok DM用にコピー</span>
-                    </button>
                 </div>
             </div>
 
             <div class="hp-link-box">
-                <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
+                <div class="hp-link-title">📢 国大セミナーの最新情報はこちら！</div>
+                <a href="https://www.kokudai.com/school?sch_pref=tokyo" target="_blank" rel="noopener noreferrer" class="hp-link-btn hp-search-btn">🔍 近くの国大セミナーの校舎を探す</a>
                 <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
             </div>
 
@@ -900,14 +905,12 @@
                     <button class="share-btn btn-fail-style" onclick="shareFailResult('instagram')">
                         <span>📸 Instagram DM用にコピー</span>
                     </button>
-                    <button class="share-btn btn-fail-style" onclick="shareFailResult('tiktok')">
-                        <span>🎵 TikTok DM用にコピー</span>
-                    </button>
                 </div>
             </div>
 
             <div class="hp-link-box">
-                <div class="hp-link-title">📢 毎週金曜日くらいに塾長が記事を更新中！</div>
+                <div class="hp-link-title">📢 国大セミナーの最新情報はこちら！</div>
+                <a href="https://www.kokudai.com/school?sch_pref=tokyo" target="_blank" rel="noopener noreferrer" class="hp-link-btn hp-search-btn">🔍 近くの国大セミナーの校舎を探す</a>
                 <a href="https://www.kokudai.com/school/akabane/" target="_blank" rel="noopener noreferrer" class="hp-link-btn">国大セミナー赤羽校 HPを見る</a>
             </div>
 
@@ -1306,7 +1309,6 @@
             });
         }
 
-        // ② 成功画面SNS共有ロジック（Instagram・TikTok対応）
         function shareResult(type) {
             var shareText = "国大セミナー赤羽校の塾長を倒してみない？私のクリアタイムは" + formattedClearTime + "だったよ！\n#国大セミナー #赤羽校 #塾長からの挑戦状\nリンクから君も挑戦だ！👇\nhttps://ksakabanekou-png.github.io/nazotoki/";
             
@@ -1314,12 +1316,9 @@
                 executeNativeShare(shareText);
             } else if (type === 'instagram') {
                 copyAndLaunchApp(shareText, "instagram://", "Instagram");
-            } else if (type === 'tiktok') {
-                copyAndLaunchApp(shareText, "snssdk1128://", "TikTok");
             }
         }
 
-        // ② 失敗画面SNS共有ロジック（Instagram・TikTok対応）
         function shareFailResult(type) {
             var shareText = "国大セミナー赤羽校の問題、むずかしすぎる…！みんなも解けるか塾長からの挑戦状にチャレンジしてみて！\n#国大セミナー #赤羽校 #塾長からの挑戦状\n問題に挑戦する👇\nhttps://ksakabanekou-png.github.io/nazotoki/";
             
@@ -1327,8 +1326,6 @@
                 executeNativeShare(shareText);
             } else if (type === 'instagram') {
                 copyAndLaunchApp(shareText, "instagram://", "Instagram");
-            } else if (type === 'tiktok') {
-                copyAndLaunchApp(shareText, "snssdk1128://", "TikTok");
             }
         }
 
@@ -1337,18 +1334,16 @@
                 navigator.share({ text: text }).catch(function(e) { console.log(e); });
             } else {
                 navigator.clipboard.writeText(text).then(function() {
-                    alert("文章をコピーしました！LINEやSNSに貼り付けて友達に送ってね！\n\n" + text);
+                    alert("文章をコピーしました！LINEやSNSに貼り付けて友達に送ね！\n\n" + text);
                 }).catch(function() {
                     alert("文章を選択してコピーしてください：\n\n" + text);
                 });
             }
         }
 
-        // クリップボードにコピーしてアプリ起動を試みる関数
         function copyAndLaunchApp(text, appScheme, appName) {
             navigator.clipboard.writeText(text).then(function() {
                 alert("DM用の文章をコピーしました！\nこのあと" + appName + "が開きますので、友達とのDM画面に「貼り付け（ペースト）」して送ってください。");
-                // アプリのカスタムURLスキームを叩いて起動を試みる
                 window.location.href = appScheme;
             }).catch(function() {
                 alert("文章の自動コピーに失敗しました。お手数ですが以下の文章をコピーして" + appName + "のDMでお使いください：\n\n" + text);
